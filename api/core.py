@@ -3,9 +3,13 @@ import random
 from flask import Flask
 from flask import request, session
 from flask_session import Session
+from game import *
+
+
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
+
 class Player:
     def __init__(self, n):
         self.name = n
@@ -65,11 +69,19 @@ class Card:
             player.addToHand(card)
             cards.remove(card)
 
-
-
-
 deck = []
 players = []
+
+game = Game(Card.initializeCards())
+
+# Start the game with the player 
+@app.route('/start_game')
+def start_game():
+    if game is not None:
+        print(game)
+    return "success"
+
+    
 
 @app.route('/init_cards')
 def init_cards():
@@ -119,7 +131,6 @@ def join_game(user_name):
         p = Player(user_name)
         players.append(p)
     return {"success": "The player was added"}
-
 
 
 if __name__ == "__main__":

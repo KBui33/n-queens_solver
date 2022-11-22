@@ -8,6 +8,7 @@ function App() {
   const [curCards, setCurCards] = useState([{ value: "0", suit: "test" }]);
   const [inGame, setInGame] = useState(false);
   useEffect(() => {
+    axios.get("/init").then((res) => console.log(res));
     if (!inGame) {
       axios.post("/leave_game/CDickie").then((res) => {
         console.log(res.data["success"]);
