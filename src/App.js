@@ -1,35 +1,22 @@
 import logo from "./logo.svg";
 import { useState, useEffect } from "react";
+import Card from "./components/Card";
 import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0);
-
+  const [curCards, setCurCards] = useState([{ value: "0", suit: "test" }]);
   useEffect(() => {
-    axios.get("/time").then((res) => {
-      setCurrentTime(res.data.time);
+    axios.get("/init_cards").then((res) => {
+      let cardList = JSON.parse(res.data["cards"]);
+      setCurCards(cardList);
     });
   }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p className="text-3xl font-bold underline">
-          the current time is {currentTime}
-        </p>
-      </header>
+    <div>
+      {(curCards || []).map((item) => (
+        <Card key={JSON.stringify(item)} card={item} />
+      ))}
     </div>
   );
 }
