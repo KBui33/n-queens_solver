@@ -1,35 +1,53 @@
 import logo from "./logo.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Card from "./components/Card";
 import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0);
-
+  const [curCards, setCurCards] = useState([{ value: "0", suit: "test" }]);
+  const [inGame, setInGame] = useState(false);
   useEffect(() => {
-    axios.get("/time").then((res) => {
-      setCurrentTime(res.data.time);
-    });
-  }, []);
+    if (!inGame) {
+      axios.post("/leave_game/CDickie").then((res) => {
+        console.log(res.data["success"]);
+      });
+    } else {
+      axios.get("/init_cards").then((res) => {
+        if (res.data["error"]) {
+          console.log("cards already initialized");
+        }
+        axios.post("/join_game/CDickie").then((res) => {
+          if (!res.data["success"]) {
+            console.log("error joining game");
+            return "";
+          }
+          axios.post("/draw/CDickie").then((res) => {
+            if (!res.data["success"]) {
+              console.log("error drawing hand");
+              return "";
+            }
+            let cardList = JSON.parse(res.data["success"]);
+            setCurCards(cardList);
+          });
+        });
+      });
+    }
+  }, [inGame]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p className="text-3xl font-bold underline">
-          the current time is {currentTime}
-        </p>
-      </header>
+    <div>
+      <div>
+        {((inGame && curCards) || []).map((item) => (
+          <Card key={JSON.stringify(item)} card={item} />
+        ))}
+      </div>
+      <button
+        onClick={() => {
+          setInGame(!inGame);
+        }}
+      >
+        Join/Leave Game
+      </button>
     </div>
   );
 }
