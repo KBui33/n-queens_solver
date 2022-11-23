@@ -1,23 +1,26 @@
 import "./App.css";
 import WebSocketCall from "./components/WebSocketCall";
+import Card from "./components/Card";
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 
 function App() {
   const [socketInstance, setSocketInstance] = useState("");
   // const [loading, setLoading] = useState(true);
-  const [buttonStatus, setButtonStatus] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [hand, setHand] = useState(null);
+  const [numPlayers, setNumPlayers] = useState(0);
 
   const handleClick = () => {
-    if (buttonStatus === false) {
-      setButtonStatus(true);
+    if (connecting === false) {
+      setConnecting(true);
     } else {
-      setButtonStatus(false);
+      setConnecting(false);
     }
   };
 
   useEffect(() => {
-    if (buttonStatus === true) {
+    if (connecting === true) {
       const socket = io("localhost:5001/", {
         transports: ["websocket"],
         cors: {
@@ -27,13 +30,19 @@ function App() {
 
       setSocketInstance(socket);
 
-      socket.on("connect", (data) => {
-        console.log(data);
+      socket.on("connect", (res) => {
+        if (!res) return;
+        setNumPlayers(res.data.numPlayers);
       });
 
       // setLoading(false);
 
-      socket.on("disconnect", (data) => {
+      socket.on("disconnect", (res) => {
+        if (!res) return;
+        setNumPlayers(res.data.numPlayers);
+      });
+
+      socket.on("output", (data) => {
         console.log(data);
       });
 
@@ -41,14 +50,31 @@ function App() {
         socket.disconnect();
       };
     }
-  }, [buttonStatus]);
+  }, [connecting]);
 
   return (
     <div className="App">
       <p className="text-2xl text-red-600">
         Hello I am a flask-react-socketio-app
       </p>
-      <button onClick={handleClick}>Connect to Socket</button>
+      <div id="game">
+        {connecting ? (
+          <div>
+            <p># of Players: {numPlayers}</p>
+          </div>
+        ) : (
+          <button onClick={handleClick}>Connect to Game</button>
+        )}
+      </div>
+      <div id="cardContent">
+        {/* {connecting ? (
+          hand.map(function (card, i) {
+            return <Card card={card} key={i} />;
+          })
+        ) : (
+          <div></div>
+        )} */}
+      </div>
     </div>
   );
 }
