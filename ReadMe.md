@@ -23,22 +23,14 @@ After installation please follow the instructions below to download the repo.
 - Run the following command:
 
 ```bash
-  git clone https://github.com/adrianhuber17/webSocket-App.git
-```
-
-- Navigate into the new sub-folder created called **WebSocket-App**.
-- Run the following commands to create an environment and install the dependencies:
-
-```bash
-  python3 -m venv env
-  source env/bin/activate
+  source back-end/env/bin/activate
   pip install -r requirements.txt
 ```
 
 - Navigate into the /**front-end** folder and run the following command:
 
 ```bash
-  npm i react-scripts
+  npm install
 ```
 
 ## Run Locally
@@ -61,17 +53,3 @@ Terminal **window 2** - start the client:
   cd webSocket-App/front-end
   npm start
 ```
-
-## Demo
-
-The browser on the left is Google Chrome and the Browser on the right is Firefox.
-The demo below displays in **red** a simple fetch to the server that executes on the rendering of the page using an http call.
-It also displays a chat communication between two users in the server using WebSocket communication. Notice that when a message is sent by one
-user, the other user receives the message without having to re-render the component or the page.
-
-![](/applicationDemo.gif)
-
-You will notice in the code that I manually set Flask to run on PORT 5001 instead of the usual PORT 5000.
-This is because AirPlay in Apple is also running on PORT 5000 and it was making it difficult for Flask and React to connect
-using WebSockets.
-Another workaround is to turn off Airplay on the Mac by going to System Preferences > Sharing > uncheck AirPlay Receiver.
