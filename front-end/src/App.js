@@ -30,6 +30,21 @@ function App() {
     }
     socketInstance.emit("start_game", "");
   };
+  const check = () => {
+    socketInstance.emit("check");
+  };
+  const raise = () => {
+    let val = document.getElementById("raiseInput").value;
+    console.log(val);
+    if (val === "" || val === undefined || val === null || val <= 0) {
+      alert("You must enter a numeric value >= 0");
+      return;
+    }
+    socketInstance.emit("raise", val);
+  };
+  const fold = () => {
+    socketInstance.emit("fold");
+  };
 
   useEffect(() => {
     if (connecting === true) {
@@ -74,12 +89,25 @@ function App() {
         {connecting ? (
           <div>
             <p># of Players: {numPlayers}</p>
-            <button onClick={startGame}>Start Game</button>
+            {hand == null ? (
+              <button onClick={startGame}>Start Game</button>
+            ) : (
+              <div></div>
+            )}
             {hand != null ? (
-              <div>
-                {hand.map((item) => {
-                  return <Card key={JSON.stringify(item)} card={item} />;
-                })}
+              <div id="gameContent">
+                <div id="river"></div>
+                <div id="hand">
+                  {hand.map((item) => {
+                    return <Card key={JSON.stringify(item)} card={item} />;
+                  })}
+                </div>
+                <button onClick={check}>Check</button>
+                <form>
+                  <input type="number" id="raiseInput"></input>
+                  <button onClick={raise}>Raise</button>
+                </form>
+                <button onClick={fold}>Fold</button>
               </div>
             ) : (
               <div></div>
