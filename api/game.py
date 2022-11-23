@@ -1,23 +1,32 @@
 import random
 from card import * 
+from player import *
 
 class Game:
     def __init__(self):
         self.deck = []
         self.board = []
-        self.burnCards = [] 
+        self.burnedCards = [] 
         self.players = []
         self.game_over = False 
+        self.totalPot = 0 
 
+        # Need a var for small blind and big blind 
+
+    # Inital stuff to do when starting the game 
     def initGame(self):
+        
+        # Create the deck and shuffle it 
         self.initializeCards()
         self.shuffleDeck()
 
-    def addPlayer(self, player):
-        self.players.append(player)
+        # Deal 2 cards to each player 
+        for i in len(self.players):
+            print() # Temp here, deal card to player
 
-    def __str__(self):
-        return self
+    # Add player to the game 
+    def addPlayer(self, name):
+        self.players.append(Player(name))
 
     def initializeCards(self):
             #returns a list of type Card[] with all possible options, not sorted
@@ -44,6 +53,10 @@ class Game:
     def shuffleDeck(self):
         random.shuffle(self.deck)
 
+    # Deal a card to the player, the top of the deck is at index 0 
+    def dealCard(self):
+        return self.deck[0]
+
     def listToString(self):
         #converts a list of card objects to a single string
         s = "["
@@ -54,6 +67,10 @@ class Game:
                 s += "{\"value\":\"" + str(self.deck[i].value) + "\", \"suit\":\"" + str(self.deck[i].suit) + "\"},"
         s += "]"
         return s
+
+    def printPlayers(self):
+        for i in self.players:
+            print(i.name)
     # def drawHand(cards, player):
     #     #remove player.handsize cards from cards, and add them to player's hand    
     #     for i in range(0, player.handSize):
