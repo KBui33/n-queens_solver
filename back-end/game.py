@@ -7,6 +7,7 @@ class Game:
         self.board = []
         self.burnCards = [] 
         self.players = []
+        self.blind = 10
         self.game_over = False 
 
     def initGame(self):
@@ -18,7 +19,16 @@ class Game:
 
     def __str__(self):
         return self
-
+    def gameLoop(self):
+        if(len(self.players) < 2):
+            return "need at least two players to be in the game"
+        #assert websocket connection for
+        while(not self.game_over):
+            river = []
+            #get big and small blinds
+            players = self.players;
+            players[0].wager(self.blind)
+            players[1].wager(self.blind/2)
     def initializeCards(self):
             #returns a list of type Card[] with all possible options, not sorted
             for i in range(0, 4):
@@ -37,7 +47,6 @@ class Game:
                 #14 is ace
                 for j in range(2, 15):
                     card = Card(j, s)
-                    print(card)
                     self.deck.append(card)
 
 
