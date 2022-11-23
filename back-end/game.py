@@ -19,6 +19,7 @@ class Game:
         self.players = []
         self.blind = 10
         self.numPlayers =0
+        self.pot = 0;
         self.game_over = False 
 
     def initGame(self):
@@ -55,29 +56,26 @@ class Game:
     def __str__(self):
         return self
 
-    def gameLoop(self):
-        # if(len(self.players) < 2):
-        #     return "need at least two players to be in the game"
-        #assert websocket connection for all players
+    def end_round(self, winner):
+        #TODO: implement summing all bets of players, then add it to the winning player id
+        #ends the round, adding all bets to the winning player
+        return
+    def start_game(self):
+        #function to start an initial game and give hands to the users
 
         #playing 1 round
         self.dealCards();
-        river = []
         players = self.players;
-        if(players[0]): players[0].wager(self.blind)
+        if(len(players) > 1): 
+            players[0].wager(self.blind, self)
+            players[1].wager(self.blind/2, self)
+        else:
+            #emit back to user that game needs more players to start
+            return
 
         for p in players:
             send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
-        # while(not self.game_over):
-        #     self.dealCards(); #deal each player a new hand
-        #     river = []
-        #     #get big and small blinds
-        #     players = self.players;
-        #     if(players[0]): players[0].wager(self.blind)
-
-        #     #send game info to the players
-        #     for p in players:
-        #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        
 
     def initializeCards(self):
             #returns a list of type Card[] with all possible options, not sorted
