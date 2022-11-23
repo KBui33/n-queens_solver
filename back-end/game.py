@@ -1,5 +1,7 @@
 import random
 from card import * 
+from player import *
+from flask_socketio import emit
 try:
     from __main__ import socketio
 except ImportError:
@@ -7,7 +9,7 @@ except ImportError:
 
 
 def send_message(client_id, data):
-    socketio.emit('output', data, room=client_id)
+    emit('output', data, room=client_id)
     print('sending message "{}" to client "{}".'.format(data, client_id))
 class Game:
     def __init__(self):
@@ -25,6 +27,8 @@ class Game:
 
     def dealCards(self):
         #takes out cards from the deck and puts them in players hands
+        d = self.deck
+        print(d)
         for p in self.players:
             p.dealHand(self.deck)
 
@@ -55,16 +59,25 @@ class Game:
         # if(len(self.players) < 2):
         #     return "need at least two players to be in the game"
         #assert websocket connection for all players
-        while(not self.game_over):
-            self.dealCards(); #deal each player a new hand
-            river = []
-            #get big and small blinds
-            players = self.players;
-            if(players[0]): players[0].wager(self.blind)
 
-            #send game info to the players
-            for p in players:
-                send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        #playing 1 round
+        self.dealCards();
+        river = []
+        players = self.players;
+        if(players[0]): players[0].wager(self.blind)
+
+        for p in players:
+            send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        # while(not self.game_over):
+        #     self.dealCards(); #deal each player a new hand
+        #     river = []
+        #     #get big and small blinds
+        #     players = self.players;
+        #     if(players[0]): players[0].wager(self.blind)
+
+        #     #send game info to the players
+        #     for p in players:
+        #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
 
     def initializeCards(self):
             #returns a list of type Card[] with all possible options, not sorted

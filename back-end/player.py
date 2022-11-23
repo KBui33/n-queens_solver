@@ -12,6 +12,7 @@ class Player:
         self.hand = []
         self.handSize = 2
         self.money = m
+        self.curBet = 0
     def dealHand(self, deck):
         for i in range(0, self.handSize):
             self.hand.append(deck.pop(0))

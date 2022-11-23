@@ -1,6 +1,7 @@
 import "./App.css";
 import WebSocketCall from "./components/WebSocketCall";
 import Card from "./components/Card";
+import axios from "axios";
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 
@@ -9,7 +10,7 @@ function App() {
   // const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [hand, setHand] = useState(null);
-  const [numPlayers, setNumPlayers] = useState(0);
+  const [numPlayers, setNumPlayers] = useState([]);
 
   const handleClick = () => {
     if (connecting === false) {
@@ -17,6 +18,17 @@ function App() {
     } else {
       setConnecting(false);
     }
+  };
+
+  const startGame = () => {
+    // axios.get("/start_game").then((res) => {
+    //   console.log(res);
+    // });
+    if (!socketInstance) {
+      console.log("Please connect to the game first");
+      return;
+    }
+    socketInstance.emit("start_game", "");
   };
 
   useEffect(() => {
@@ -42,8 +54,9 @@ function App() {
         setNumPlayers(res.data.numPlayers);
       });
 
-      socket.on("output", (data) => {
-        console.log(data);
+      socket.on("output", (res) => {
+        setHand(JSON.parse(res.cards));
+        console.log(JSON.parse(res.cards));
       });
 
       return function cleanup() {
@@ -61,6 +74,16 @@ function App() {
         {connecting ? (
           <div>
             <p># of Players: {numPlayers}</p>
+            <button onClick={startGame}>Start Game</button>
+            {hand != null ? (
+              <div>
+                {hand.map((item) => {
+                  return <Card key={JSON.stringify(item)} card={item} />;
+                })}
+              </div>
+            ) : (
+              <div></div>
+            )}
           </div>
         ) : (
           <button onClick={handleClick}>Connect to Game</button>

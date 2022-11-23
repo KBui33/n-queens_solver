@@ -12,9 +12,11 @@ socketio = SocketIO(app,cors_allowed_origins="*")
 clients = []
 game = Game();
 
-@app.route('/start_game')
-def start_game():
+@socketio.on("start_game")
+def start_game(data):
+    global game, clients
     game.initGame();
+    print(game.deck)
     #determine the total # of players before starting    
     game.gameLoop();
 
@@ -27,7 +29,7 @@ def connected():
     game.addPlayer(p)
     clients.append(request.sid)
     print("client has connected")
-    emit("connect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
+    socketio.emit("connect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
 
 @socketio.on('data')
 def handle_message(data):
