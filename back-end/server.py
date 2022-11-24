@@ -55,10 +55,11 @@ def disconnected():
     emit("disconnect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
 
 @socketio.on("ready_player")
-def ready_player(client_id):
-    # print(client_id)
+def ready_player(data):
+    print(data)
     
-    return 
+    game.setPlayerReadyStatus(data["playerName"], data["status"])
+
 
 def send_message(client_id, data):
     socketio.emit('output', data, room=client_id)

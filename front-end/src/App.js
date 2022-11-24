@@ -12,6 +12,7 @@ function App() {
   const [hand, setHand] = useState(null);
   const [numPlayers, setNumPlayers] = useState([]);
   const [playerName, setPlayerName] = useState("");
+  const [playerStatus, setPlayerStatus] = useState(false);
 
   const handleClick = () => {
     if (connecting === false) {
@@ -32,8 +33,10 @@ function App() {
     socketInstance.emit("start_game", "");
   };
 
-  const readyPlayer = () => {
-    socketInstance.emit("ready_player", playerName);
+  const changePlayerStatus = () => {
+    setPlayerStatus(!playerStatus);
+    console.log(playerStatus);
+    socketInstance.emit("ready_player", { playerName, status: playerStatus });
   };
 
   useEffect(() => {
@@ -85,7 +88,7 @@ function App() {
         {connecting ? (
           <div>
             <p># of Players: {numPlayers}</p>
-            <button className="button-6" onClick={readyPlayer}>
+            <button className="button-6" onClick={changePlayerStatus}>
               Ready
             </button>
             {hand != null ? (

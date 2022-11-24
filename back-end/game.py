@@ -39,7 +39,11 @@ class Game:
         for p in self.players:
             if p.name == player:
                 p.ready = stats
+                # Emit to player that updated 
+                
                 break 
+
+        self.printPlayers()
 
         # Check if all players are ready 
         for p in self.players:
@@ -48,7 +52,7 @@ class Game:
                 return False 
         
         # Start the game 
-        self.initGame()
+        # self.initGame()
         return 
 
 
@@ -161,6 +165,8 @@ class Game:
         #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
 
     def printPlayers(self):
-        print("Player currently in game (Not Ready)")
+        print("Player currently in game")
         for p in self.players:
-            print(p.name)
+            print(vars(p))
+
+
