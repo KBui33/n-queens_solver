@@ -2,12 +2,14 @@
 
 # dependencies
 /node_modules
-/api/venv
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+
+# environments
+/back-end/venv
 
 # production
 /build
