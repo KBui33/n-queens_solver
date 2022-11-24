@@ -11,6 +11,7 @@ function App() {
   const [connecting, setConnecting] = useState(false);
   const [hand, setHand] = useState(null);
   const [numPlayers, setNumPlayers] = useState([]);
+  const [playerName, setPlayerName] = useState("");
 
   const handleClick = () => {
     if (connecting === false) {
@@ -31,6 +32,10 @@ function App() {
     socketInstance.emit("start_game", "");
   };
 
+  const readyPlayer = () => {
+    socketInstance.emit("ready_player", playerName);
+  };
+
   useEffect(() => {
     if (connecting === true) {
       const socket = io("localhost:5001/", {
@@ -43,7 +48,13 @@ function App() {
       setSocketInstance(socket);
 
       socket.on("connect", (res) => {
-        if (!res) return;
+        socket.emit("set_name", playerName, (res) => {
+          if (!res) return;
+        });
+      });
+
+      socket.on("num_players", (res) => {
+        console.log(res);
         setNumPlayers(res.data.numPlayers);
       });
 
@@ -74,7 +85,9 @@ function App() {
         {connecting ? (
           <div>
             <p># of Players: {numPlayers}</p>
-            <button onClick={startGame}>Start Game</button>
+            <button className="button-6" onClick={readyPlayer}>
+              Ready
+            </button>
             {hand != null ? (
               <div>
                 {hand.map((item) => {
@@ -86,7 +99,14 @@ function App() {
             )}
           </div>
         ) : (
-          <button onClick={handleClick}>Connect to Game</button>
+          <div id="join">
+            <input
+              style={{ border: "solid black" }}
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+            />
+            <button onClick={handleClick}>Connect to Game</button>
+          </div>
         )}
       </div>
       <div id="cardContent">

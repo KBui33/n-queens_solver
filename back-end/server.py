@@ -10,26 +10,34 @@ CORS(app,resources={r"/*":{"origins":"*"}})
 socketio = SocketIO(app,cors_allowed_origins="*")
 
 clients = []
-game = Game();
+game = Game()
 
 @socketio.on("start_game")
 def start_game(data):
     global game, clients
-    game.initGame();
+    game.initGame()
     print(game.deck)
     #determine the total # of players before starting    
-    game.gameLoop();
+    game.gameLoop()
 
 @socketio.on("connect")
 def connected():
     """event listener when client connects to the server"""
     #add this player to the list of players
-    p = Player("tempName", request.sid, 1000);
-    print(request.sid)
-    game.addPlayer(p)
     clients.append(request.sid)
     print("client has connected")
-    socketio.emit("connect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
+
+
+@socketio.on("set_name")
+def set_name(name):
+    # print(name)
+    p = Player(name, request.sid, 1000)
+    print(request.sid)
+    game.addPlayer(p)
+    
+    game.printPlayers()
+    # return {"data":{"id":request.sid, "numPlayers":game.numPlayers}}
+    socketio.emit("num_players",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
 
 @socketio.on('data')
 def handle_message(data):
@@ -45,6 +53,12 @@ def disconnected():
     clients.remove(request.sid)
     print("user disconnected")
     emit("disconnect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
+
+@socketio.on("ready_player")
+def ready_player(client_id):
+    # print(client_id)
+    
+    return 
 
 def send_message(client_id, data):
     socketio.emit('output', data, room=client_id)

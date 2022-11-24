@@ -1,7 +1,7 @@
 class Player:
     def __init__(self, n, pid):
         self.name = n
-        self.id = pid;
+        self.id = pid
         self.hand = []
         self.handSize = 2
         self.money= 1000
@@ -13,6 +13,8 @@ class Player:
         self.handSize = 2
         self.money = m
         self.curBet = 0
+        self.ready = False
+        
     def dealHand(self, deck):
         for i in range(0, self.handSize):
             self.hand.append(deck.pop(0))
@@ -23,5 +25,5 @@ class Player:
         else:
             self.curBet += val
             self.money - val
-            return True;
+            return True
         

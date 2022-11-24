@@ -33,7 +33,7 @@ After installation please follow the instructions below to download the repo.
   npm install
 ```
 
-## Run Locally
+## Run Locally (MacOs)
 
 Open two terminal windows, one to be used by the Flask server and the other
 to be used by the React client.
@@ -50,6 +50,33 @@ Terminal **window 1** - start the server:
 Terminal **window 2** - start the client:
 
 ```bash
+  cd webSocket-App/front-end
+  npm start
+```
+
+## Run Locally (Windows)
+
+Open two terminal windows, one to be used by the Flask server and the other
+to be used by the React client.
+Make sure the server is initialized before the client to avoid any issues.
+
+Terminal **window 1** - start the server:
+
+Make sure you have a virtual environment running. If not use this command
+
+```console
+  py -3 -m venv venv
+```
+
+```console
+  cd webSocket-App
+  venv\Scripts\activate
+  python3 server.py
+```
+
+Terminal **window 2** - start the client:
+
+```console
   cd webSocket-App/front-end
   npm start
 ```
