@@ -8,8 +8,11 @@ class Game:
         self.board = []
         self.burnedCards = [] 
         self.players = []
+        self.discardCards = []
         self.game_over = False 
         self.totalPot = 0 
+        self.round = 0
+
 
         # Need a var for small blind and big blind 
 
@@ -71,9 +74,3 @@ class Game:
     def printPlayers(self):
         for i in self.players:
             print(i.name)
-    # def drawHand(cards, player):
-    #     #remove player.handsize cards from cards, and add them to player's hand    
-    #     for i in range(0, player.handSize):
-    #         card = cards[0]
-    #         player.addToHand(card)
-    #         cards.remove(card)
