@@ -74,16 +74,16 @@ class Game:
     def gameLoop(self):
         if(len(self.players) < 2):
             return "need at least two players to be in the game"
-        #assert websocket connection for
-        # while(not self.game_over):
-        #     river = []
-        #     #get big and small blinds
-        #     players = self.players
-        #     players[0].wager(self.blind)
-        #     players[1].wager(self.blind/2)
-        # if(len(self.players) < 2):
-        #     return "need at least two players to be in the game"
-        #assert websocket connection for all players
+        # assert websocket connection for
+        while(not self.game_over):
+            river = []
+            #get big and small blinds
+            players = self.players
+            players[0].wager(self.blind)
+            players[1].wager(self.blind/2)
+        if(len(self.players) < 2):
+            return "need at least two players to be in the game"
+        # assert websocket connection for all players
 
         #playing 1 round
         self.dealCards()
