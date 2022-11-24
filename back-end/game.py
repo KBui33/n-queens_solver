@@ -40,14 +40,14 @@ class Game:
             if p.name == player:
                 p.ready = stats
                 # Emit to player that updated 
-                
+
                 break 
 
         self.printPlayers()
 
         # Check if all players are ready 
         for p in self.players:
-            if not p.ready:
+            if not p.ready and len(self.players) <= 4:
                 print() # Emit to the players that they need to wait for other players to be ready 
                 return False 
         
@@ -56,9 +56,9 @@ class Game:
         return 
 
 
-    def dealCards(self, player):
+    def dealCard(self, player):
         # Takes out cards from the deck and puts them in players hands
-        card = self.deck.pop()
+        card = self.deck.pop(0)
         player.hand.append(card)
         return 
 
@@ -126,9 +126,13 @@ class Game:
         self.initializeCards()
         self.shuffleDeck()
 
-        # Deal 2 cards to each player 
-        for i in len(self.players):
-            print() # Temp here, deal card to player
+        # Deal 2 cards to each player that not the dealer  
+        for p in self.players:
+            if (not p.dealer):
+                self.dealCard(p)
+                self.dealCard(p)
+
+        self.gameLoop()
 
 
     def gameLoop(self):
