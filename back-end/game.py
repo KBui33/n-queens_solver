@@ -52,7 +52,7 @@ class Game:
                 return False 
         
         # Start the game 
-        # self.initGame()
+        self.initGame()
         return 
 
 
@@ -136,37 +136,39 @@ class Game:
 
 
     def gameLoop(self):
-        if(len(self.players) < 2):
-            return "need at least two players to be in the game"
-        # assert websocket connection for
-        while(not self.game_over):
-            river = []
-            #get big and small blinds
-            players = self.players
-            players[0].wager(self.blind)
-            players[1].wager(self.blind/2)
-        if(len(self.players) < 2):
-            return "need at least two players to be in the game"
-        # assert websocket connection for all players
-
-        #playing 1 round
-        self.dealCards()
-        river = []
-        players = self.players
-        if(players[0]): players[0].wager(self.blind)
-
-        for p in players:
-            send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        print("we are in the game loop")
+        return 
+        # if(len(self.players) < 2):
+        #     return "need at least two players to be in the game"
+        # # assert websocket connection for
         # while(not self.game_over):
-        #     self.dealCards(); #deal each player a new hand
         #     river = []
         #     #get big and small blinds
-        #     players = self.players;
-        #     if(players[0]): players[0].wager(self.blind)
+        #     players = self.players
+        #     players[0].wager(self.blind)
+        #     players[1].wager(self.blind/2)
+        # if(len(self.players) < 2):
+        #     return "need at least two players to be in the game"
+        # # assert websocket connection for all players
 
-        #     #send game info to the players
-        #     for p in players:
-        #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        # #playing 1 round
+        # self.dealCards()
+        # river = []
+        # players = self.players
+        # if(players[0]): players[0].wager(self.blind)
+
+        # for p in players:
+        #     send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+        # # while(not self.game_over):
+        # #     self.dealCards(); #deal each player a new hand
+        # #     river = []
+        # #     #get big and small blinds
+        # #     players = self.players;
+        # #     if(players[0]): players[0].wager(self.blind)
+
+        # #     #send game info to the players
+        # #     for p in players:
+        # #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
 
     def printPlayers(self):
         print("Player currently in game")
