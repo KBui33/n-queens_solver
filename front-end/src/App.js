@@ -75,6 +75,11 @@ function App() {
         console.log(JSON.parse(res.cards));
       });
 
+      socket.on("game_start_status", (res) => {
+        console.log(res);
+        // Tell the player that its not ready yet
+      });
+
       return function cleanup() {
         socket.disconnect();
       };

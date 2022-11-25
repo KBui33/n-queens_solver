@@ -39,20 +39,21 @@ class Game:
         for p in self.players:
             if p.name == player:
                 p.ready = stats
-                # Emit to player that updated 
-
                 break 
 
         self.printPlayers()
 
         # Check if all players are ready 
         for p in self.players:
-            if not p.ready and len(self.players) <= 4:
-                print() # Emit to the players that they need to wait for other players to be ready 
+            if not p.ready or len(self.players) <= 4:
+                print("Game not ready yet") 
+                # Emit to the players that they need to wait for other players to be ready 
+                # socketio.emit("game_start_status", {msg: "Wait from more ppl to join"})
                 return False 
         
         # Start the game 
-        self.initGame()
+        print("it whoudl not be here yet")
+        # self.initGame()
         return 
 
 
@@ -119,56 +120,51 @@ class Game:
         s += "]"
         return s
     
-    # Inital stuff to do when starting the game 
+    # Inital stuff to do when starting the game. Stuff you do before giving the cards 
     def initGame(self):
         
         # Create the deck and shuffle it 
         self.initializeCards()
         self.shuffleDeck()
 
-        # Deal 2 cards to each player that not the dealer  
-        for p in self.players:
-            if (not p.dealer):
-                self.dealCard(p)
-                self.dealCard(p)
+        # Set the small blind and Big blind to players 
+        
+        # Notify the players with blind to place a bet
+
 
         self.gameLoop()
 
-
+    # Start of the round, cards are given to players 
     def gameLoop(self):
         print("we are in the game loop")
+
+         # # Deal 2 cards to each player thats not the dealer  
+        # for p in self.players:
+        #     if (not p.dealer):
+        #         self.dealCard(p)
+        #         self.dealCard(p)
+
+        # The person next to the big blind starts. Players either call, raise or fold 
+
+        # Once we hit back to the starting person pot is collected 
+
+        # Put 3 cards on the board (The flop)
+
+        # The left active player gets to start first. Can put a bet, check, or fold. 
+            # If players place bet then everyone needs to put that much until it goes back to that player. Samething if raise happens
+         
+        # Add the 4th card (The turn) 
+        # Do another betting round (like the one above)
+
+        # 5th card is placed (the River)
+        # Do another betting round (like the one above)
+
+
+        # Showdown, everyone shows their cards. 
+            # Find the best card combo wins the pot 
+        
+        # Restart and move BB and SB
         return 
-        # if(len(self.players) < 2):
-        #     return "need at least two players to be in the game"
-        # # assert websocket connection for
-        # while(not self.game_over):
-        #     river = []
-        #     #get big and small blinds
-        #     players = self.players
-        #     players[0].wager(self.blind)
-        #     players[1].wager(self.blind/2)
-        # if(len(self.players) < 2):
-        #     return "need at least two players to be in the game"
-        # # assert websocket connection for all players
-
-        # #playing 1 round
-        # self.dealCards()
-        # river = []
-        # players = self.players
-        # if(players[0]): players[0].wager(self.blind)
-
-        # for p in players:
-        #     send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
-        # # while(not self.game_over):
-        # #     self.dealCards(); #deal each player a new hand
-        # #     river = []
-        # #     #get big and small blinds
-        # #     players = self.players;
-        # #     if(players[0]): players[0].wager(self.blind)
-
-        # #     #send game info to the players
-        # #     for p in players:
-        # #         send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
 
     def printPlayers(self):
         print("Player currently in game")
