@@ -86,6 +86,8 @@ function App() {
     }
   }, [connecting]);
 
+  // Need to add some text to say that not all players are ready
+  // Game starts and view changes
   return (
     <div className="App">
       <p className="text-2xl text-red-600">
@@ -101,6 +103,7 @@ function App() {
             >
               Ready
             </button>
+
             {hand != null ? (
               <div>
                 {hand.map((item) => {

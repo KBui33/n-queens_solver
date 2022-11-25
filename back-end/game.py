@@ -12,6 +12,11 @@ def send_message(client_id, data):
     emit('output', data, room=client_id)
     print('sending message "{}" to client "{}".'.format(data, client_id))
 
+"""
+Arguemnts: 
+    smallBlind: The index of the current person with the small blind  
+    bigBlind: The index of the current person with the big blind 
+"""
 class Game:
     def __init__(self):
         self.deck = []
@@ -20,10 +25,12 @@ class Game:
         self.players = []
         self.discardCards = []
         self.blind = 10
-        self.numPlayers =0
+        self.numPlayers = 0
         self.game_over = False 
         self.totalPot = 0 
         self.round = 0
+        self.smallBlind = 0
+        self.bigBlind = 0 
         # Need a var for small blind and big blind 
 
     def setPlayerReadyStatus(self, player, stats):
@@ -34,7 +41,6 @@ class Game:
             player - Name of the player or socket id (not sure which one is better so name for now)
             stats - True or False, the status the player wants to put on 
         """
-
         # Set the player to ready 
         for p in self.players:
             if p.name == player:
@@ -49,6 +55,7 @@ class Game:
                 print("Game not ready yet") 
                 # Emit to the players that they need to wait for other players to be ready 
                 # socketio.emit("game_start_status", {msg: "Wait from more ppl to join"})
+                emit("game_start_status", {"message" : "Not all players are ready"})
                 return False 
         
         # Start the game 
@@ -107,6 +114,7 @@ class Game:
                     self.deck.append(card)
 
     def shuffleDeck(self):
+        # Shuffles the deck randomly 
         random.shuffle(self.deck)
 
     def listToString(self, cards):
@@ -122,14 +130,21 @@ class Game:
     
     # Inital stuff to do when starting the game. Stuff you do before giving the cards 
     def initGame(self):
+        # Tell view to change and start the game 
         
         # Create the deck and shuffle it 
         self.initializeCards()
         self.shuffleDeck()
 
         # Set the small blind and Big blind to players 
+            # The dealer is not in the players array, but rather the game instance it self. 
+            # For the start the small blind is 0, big blind 1. Move up after 
+        
+        self.smallBlind = 0
+        self.bigBlind = self.smallBlind + 1
         
         # Notify the players with blind to place a bet
+
 
 
         self.gameLoop()
