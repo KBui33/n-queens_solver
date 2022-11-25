@@ -12,6 +12,12 @@ socketio = SocketIO(app,cors_allowed_origins="*")
 clients = []
 game = Game();
 
+@app.route('/blind')
+def blind():
+    #return the game's blind
+    if(game == None):
+        return {"error": "game not initialzied"}
+    return {"success":game.blind}
 @socketio.on("check")
 def check():
     players = game.players
@@ -86,23 +92,49 @@ def call():
                 return
 
 @socketio.on("start_game")
-def start_game(data):
+def start_game():
     global game, clients
     game.initGame();
-    print(game.deck)
     #determine the total # of players before starting    
-    game.start_game();
+    result = game.start_game();
+    if(result == True):
+        #game has run as normal
+        return
+    else:
+        emit("notEnoughPlayers", room=request.sid)
 
 @socketio.on("connect")
 def connected():
     """event listener when client connects to the server"""
-    #add this player to the list of players
-    p = Player("tempName", request.sid, 1000);
-    print(request.sid)
-    game.addPlayer(p)
+    for p in game.players:
+        if(p.id == request.sid):
+            #resume their current progress (later)
+            return
     clients.append(request.sid)
     print("client has connected")
     socketio.emit("connect",{"data":{"id":request.sid, "numPlayers":game.numPlayers}}, broadcast=True)
+
+#
+@socketio.on("join")
+def join(wager, name):
+    #add in try-catch for casting wager in case of user input error (shouldnt happen tho)
+    num = float(wager)
+    print(type(name))
+    if(num < 0):
+        #emit back that the user must enter a number > 0
+        emit("inputError", "wLessZero", room=request.sid)
+        return
+    if(num < game.blind):
+        #emit back to the user that they need at least the value of the blind
+        emit("inputError", "lessThanBlind", room=request.sid)
+        return
+    p = Player(name, request.sid, num)
+    game.addPlayer(p)
+    
+    #emit to all other players that a new player has joined
+    emit("numPlayers", game.numPlayers, room=clients)
+    #emit to the current player that their join was successful
+    return
 
 @socketio.on('data')
 def handle_message(data):

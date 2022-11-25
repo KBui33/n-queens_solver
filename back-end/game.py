@@ -29,7 +29,6 @@ class Game:
     def dealCards(self):
         #takes out cards from the deck and puts them in players hands
         d = self.deck
-        print(d)
         for p in self.players:
             p.dealHand(self.deck)
 
@@ -71,11 +70,12 @@ class Game:
             players[1].wager(self.blind/2, self)
         else:
             #emit back to user that game needs more players to start
-            return
+
+            return False
 
         for p in players:
             send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
-        
+        return True
 
     def initializeCards(self):
             #returns a list of type Card[] with all possible options, not sorted
