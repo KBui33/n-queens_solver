@@ -11,6 +11,8 @@ function App() {
   const [connecting, setConnecting] = useState(false);
   const [hand, setHand] = useState(null);
   const [numPlayers, setNumPlayers] = useState([]);
+  const [scores, setScores] = useState([]);
+  const [curPlayer, setCurplayer] = useState([]);
   const handleClick = () => {
     if (connecting === false) {
       setConnecting(true);
@@ -60,6 +62,12 @@ function App() {
   };
 
   useEffect(() => {
+    //highlight the current player in the list of players
+    //unhighlight all other players
+    //if it is not you, then make the buttons be deactivated
+    //if it is you, then make buttons be activated
+  }, [curPlayer]);
+  useEffect(() => {
     if (connecting === true) {
       /*
         Socket Function Definitions
@@ -83,6 +91,11 @@ function App() {
       socket.on("disconnect", (res) => {
         if (!res) return;
         setNumPlayers(res.data.numPlayers);
+        let name = res.data.name;
+        alert(`${name} has been disconnected`);
+        if (res.data.numPlayers < 2) {
+          alert(`# of players is now less than 2. Ending the game`);
+        }
       });
 
       socket.on("output", (res) => {
@@ -95,6 +108,27 @@ function App() {
 
       socket.on("notEnoughPlayers", (res) => {
         alert("Need at least 2 players to start the game");
+      });
+
+      socket.on("scoreboard", (data) => {
+        //manage what the current scoreboard UI is
+        let p = [];
+        let pStrings = data.replaceAll("[", "").replaceAll("]", "").split(";");
+        for (let i = 0; i < pStrings.length; i++) {
+          p.push(JSON.parse(pStrings[i]));
+        }
+        //format and output scoreboard
+        setScores(p);
+        return;
+      });
+
+      socket.on("curPlayer", (res) => {
+        //highlight on the scoreboard whichever player's turn it is
+        setCurplayer(res.data.turn);
+      });
+
+      socket.on("players", (data) => {
+        console.log(data);
       });
 
       /*

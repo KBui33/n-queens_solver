@@ -8,8 +8,8 @@ except ImportError:
     from flask_socketio import socketio
 
 
-def send_message(client_id, data):
-    emit('output', data, room=client_id)
+def send_message(tag, client_id, data):
+    emit(tag, data, room=client_id)
     print('sending message "{}" to client "{}".'.format(data, client_id))
 class Game:
     def __init__(self):
@@ -18,6 +18,7 @@ class Game:
         self.burnCards = [] 
         self.players = []
         self.blind = 10
+        self.blindPlayer = 0
         self.numPlayers =0
         self.pot = 0;
         self.game_over = False 
@@ -48,9 +49,10 @@ class Game:
     def removePlayer(self, id):
         for p in self.players:
             if(p.id == id):
+                n = p.name
                 self.players.remove(p)
                 self.numPlayers = self.numPlayers - 1
-                return True
+                return n
         return False
     def __str__(self):
         return self
@@ -73,8 +75,14 @@ class Game:
 
             return False
 
+        #inform all players of their cards
         for p in players:
-            send_message(p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+            send_message('output', p.id, {"cards":self.listToString(p.hand), "money": str(p.money), "bet":str(p.curBet)})
+            send_message('curPlayer', p.id, {"turn":self.blindPlayer + 1})
+        
+        #it is currently self.players[1]'s turn
+        #inform all players whose turn it is
+        
         return True
 
     def initializeCards(self):
@@ -97,6 +105,17 @@ class Game:
                     card = Card(j, s)
                     self.deck.append(card)
 
+    def getScoreboard(self):
+        #returns an array of objects of the form {name: '', curBet:0, money:0}
+        s = "["
+        for i in range(0, len(self.players)):
+            if(i == len(self.players) - 1):
+                #dont include the comma
+                s+= "{\"name\":\"" + str(self.players[i].name) + "\", \"curBet\":\"" + str(self.players[i].curBet) + "\", \"money\":\"" + str(self.players[i].money) + "\", \"move\":\"" + str(self.players[i].move) + "\"}"
+            else:
+                s+= "{\"name\":\"" + str(self.players[i].name) + "\", \"curBet\":\"" + str(self.players[i].curBet) + "\", \"money\":\"" + str(self.players[i].money) + "\", \"move\":\"" + str(self.players[i].move) + "\"};"
+        s += "]"
+        return s
 
     def shuffleDeck(self):
         random.shuffle(self.deck)
