@@ -94,6 +94,10 @@ def call():
                 #the player must add more money to participate in the round
                 return
 
+@socketio.on("blind")
+def blind():
+    return 
+
 #this is the call to initialize the game and start the first round
 @socketio.on("start_game")
 def start_game():

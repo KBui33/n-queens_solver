@@ -60,6 +60,10 @@ function App() {
     socketInstance.emit("raise", val);
   };
 
+  const blindAmount = () => {
+    socketInstance.emit("blind", {});
+  };
+
   // Set the player ready status
   useEffect(() => {
     console.log(playerStatus);
@@ -147,6 +151,10 @@ function App() {
           console.log(res.start);
           alert(res.msg);
         }
+      });
+
+      socket.on("blind", (res) => {
+        console.log(res);
       });
 
       /*

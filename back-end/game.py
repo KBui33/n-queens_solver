@@ -1,7 +1,7 @@
 import random
 from card import * 
 from player import *
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room, leave_room, send
 try:
     from __main__ import socketio
 except ImportError:
@@ -120,7 +120,7 @@ class Game:
 
         # Check if all players are ready 
         for p in self.players:
-            if not p.ready or len(self.players) < 2:
+            if not p.ready or len(self.players) < 3:
                 print("Game not ready yet") 
                 # Emit to the players that they need to wait for other players to be ready 
                 emit("game_start_status", {"msg": "Wait from more ppl to join", "start": False})
@@ -155,11 +155,12 @@ class Game:
 
         join_room(room, smallId)
         join_room(room, bigId)
-        emit(f"Users {smallId} and {bigId} has joined the room, please put in a betting amount", to=room)
+        emit("blind", f"Users {smallId} and {bigId} has joined the room, please put in a betting amount", to=room)
 
         # Start the game 
 
         # Deal 2 cards to each player thats not the dealer  
+        print("setting the hand")
         for p in self.players:
             self.dealCard(p)
             self.dealCard(p)
@@ -217,7 +218,7 @@ class Game:
         # Get the player
         player = self.activePlayers[self.currentPlayerTurn]
         # Emitt to the player that it is their turn 
-        emit('player_turn', "Its your turn", room=player.ida)
+        emit('player_turn', "Its your turn", room=player.id)
         return 
 
     def endGame(self):
@@ -227,6 +228,9 @@ class Game:
         # Restart and move BB and SB
 
         # Start of the round, cards are given to players 
+        return 
+
+    def findHighestHand(self):
         return 
 
     def updateStatus(self):
