@@ -8,8 +8,8 @@ except ImportError:
     from flask_socketio import socketio
 
 
-def send_message(client_id, data):
-    emit('output', data, room=client_id)
+def send_message(tag, client_id, data):
+    emit(tag, data, room=client_id)
     print('sending message "{}" to client "{}".'.format(data, client_id))
 
 class Game:
@@ -83,9 +83,10 @@ class Game:
         # Removes players from the player set
         for p in self.players:
             if(p.id == id):
+                n = p.name
                 self.players.remove(p)
                 self.numPlayers = self.numPlayers - 1
-                return True
+                return n
         return False
 
     def initializeCards(self):
@@ -107,6 +108,18 @@ class Game:
                 for j in range(2, 15):
                     card = Card(j, s)
                     self.deck.append(card)
+
+    def getScoreboard(self):
+        #returns an array of objects of the form {name: '', curBet:0, money:0}
+        s = "["
+        for i in range(0, len(self.players)):
+            if(i == len(self.players) - 1):
+                #dont include the comma
+                s+= "{\"name\":\"" + str(self.players[i].name) + "\", \"curBet\":\"" + str(self.players[i].curBet) + "\", \"money\":\"" + str(self.players[i].money) + "\", \"move\":\"" + str(self.players[i].move) + "\"}"
+            else:
+                s+= "{\"name\":\"" + str(self.players[i].name) + "\", \"curBet\":\"" + str(self.players[i].curBet) + "\", \"money\":\"" + str(self.players[i].money) + "\", \"move\":\"" + str(self.players[i].move) + "\"};"
+        s += "]"
+        return s
 
     def shuffleDeck(self):
         # Shuffles the deck randomly 

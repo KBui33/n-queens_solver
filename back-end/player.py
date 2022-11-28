@@ -13,16 +13,15 @@ class Player:
         self.handSize = 2
         self.money = m
         self.curBet = 0
-        self.ready = False
-
     def dealHand(self, deck):
         for i in range(0, self.handSize):
             self.hand.append(deck.pop(0))
-    def wager(self, val):
+    def wager(self, val, game):
         if(val > self.money):
             #we cannot make this bet
             return False
         else:
+            game.pot += val
             self.curBet += val
             self.money - val
             return True
