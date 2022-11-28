@@ -142,6 +142,7 @@ function App() {
 
         if (res.start) {
           // Change the view
+          setStart((current) => !current);
         } else {
           console.log(res.start);
           alert(res.msg);
@@ -218,7 +219,25 @@ function App() {
   return (
     <div className="App">
       {start ? (
-        <div></div>
+        hand != null ? (
+          <div id="gameContent">
+            <div>Starting game</div>
+            <div id="river"></div>
+            <div id="hand">
+              {hand.map((item) => {
+                return <Card key={JSON.stringify(item)} card={item} />;
+              })}
+            </div>
+            <button onClick={check}>Check</button>
+            <form>
+              <input type="number" id="raiseInput"></input>
+              <button onClick={raise}>Raise</button>
+            </form>
+            <button onClick={fold}>Fold</button>
+          </div>
+        ) : (
+          <div></div>
+        )
       ) : (
         <div id="game">
           {connecting ? (
@@ -269,22 +288,3 @@ function App() {
 }
 
 export default App;
-
-// {hand != null ? (
-//   <div id="gameContent">
-//     <div id="river"></div>
-//     <div id="hand">
-//       {hand.map((item) => {
-//         return <Card key={JSON.stringify(item)} card={item} />;
-//       })}
-//     </div>
-//     <button onClick={check}>Check</button>
-//     <form>
-//       <input type="number" id="raiseInput"></input>
-//       <button onClick={raise}>Raise</button>
-//     </form>
-//     <button onClick={fold}>Fold</button>
-//   </div>
-// ) : (
-//   <div></div>
-// )}

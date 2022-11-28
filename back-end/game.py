@@ -134,7 +134,7 @@ class Game:
     def initGame(self):
         # Create the deck and shuffle it 
         print("Starting game")
-        emit("game_start_status", {"msg": "Starting Game", "start": True})
+        emit("game_start_status", {"msg": "Starting Game", "start": True}, broadcast=True)
 
         self.initializeCards()
         self.shuffleDeck()
@@ -150,6 +150,8 @@ class Game:
         room = 'blindRoom'
         smallId = self.players[self.smallBlind].id
         bigId = self.players[self.bigBlind].id
+
+        print(f"Small blind ${smallId}, Big blind ${bigId}")
 
         join_room(room, smallId)
         join_room(room, bigId)
