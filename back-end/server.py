@@ -20,6 +20,7 @@ def blind():
     if(game == None):
         return {"error": "game not initialzied"}
     return {"success":game.blind}
+
 @socketio.on("check")
 def check():
     players = game.players
@@ -83,7 +84,7 @@ def raiseMove(val):
 
 @socketio.on("call")
 def call():
-    players = game.players;
+    players = game.players
     for p in players:
         if(p.id == request.sid):
             if(p.wager(int(game.blind/2), game)):
@@ -156,6 +157,8 @@ def join(wager, name):
     #emit to the current player that their join was successful
     return
 #a call whenever a connection is lost from the server
+
+
 @socketio.on("disconnect")
 def disconnected():
     """event listener when client disconnects to the server"""

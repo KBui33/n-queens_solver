@@ -24,8 +24,8 @@ class Game:
         self.totalPot = 0           # The total amount of money through each iteration of rounds 
         self.round = 0              # Current Round 
         self.smallBlind = 0         # The index of the current person with the small blind  
-        self.bigBlind = 0           # The index of the current person with the big blind 
-
+        self.bigBlind = 0           # The index of the current person with the big blind    
+        self.currentPlayerTurn = 0  # The index of the current turn of the person 
 
     def setPlayerReadyStatus(self, player, stats):
         """
@@ -36,13 +36,10 @@ class Game:
             stats - True or False, the status the player wants to put on 
         """
         # Set the player to ready 
-
         for p in self.players:
             if p.name == player:
                 p.ready = stats
                 break 
-
-        # self.printPlayers()
 
         # Check if all players are ready 
         for p in self.players:
@@ -54,10 +51,8 @@ class Game:
                 return False 
         
         # Start the game 
-        print("it whoudl not be here yet")
         self.initGame()
         return 
-
 
     def dealCard(self, player):
         # Takes out cards from the deck and puts them in players hands
@@ -109,6 +104,10 @@ class Game:
                     card = Card(j, s)
                     self.deck.append(card)
 
+    def shuffleDeck(self):
+            # Shuffles the deck randomly 
+            random.shuffle(self.deck)
+
     def getScoreboard(self):
         #returns an array of objects of the form {name: '', curBet:0, money:0}
         s = "["
@@ -121,10 +120,6 @@ class Game:
         s += "]"
         return s
 
-    def shuffleDeck(self):
-        # Shuffles the deck randomly 
-        random.shuffle(self.deck)
-
     def listToString(self, cards):
         #converts a list of card objects to a single string
         s = "["
@@ -135,16 +130,9 @@ class Game:
                 s += "{\"value\":\"" + str(cards[i].value) + "\", \"suit\":\"" + str(cards[i].suit) + "\"},"
         s += "]"
         return s
-
-    def getBlindAmount(self, cb): 
-        print("we is in the call back, GG bro")
-        print(cb)
-        return 
         
     # Inital stuff to do when starting the game. Stuff you do before giving the cards 
     def initGame(self):
-        # Tell view to change and start the game 
-        
         # Create the deck and shuffle it 
         self.initializeCards()
         self.shuffleDeck()
@@ -152,20 +140,16 @@ class Game:
         # Set the small blind and Big blind to players 
             # The dealer is not in the players array, but rather the game instance it self. 
             # For the start the small blind is 0, big blind 1. Move up after 
-        
         self.smallBlind = 0
         self.bigBlind = self.smallBlind + 1
         
         # Notify the players with blind to place a bet
             # Prob need to group the blinds ppl in a room, then send out the thing with their repective amount 
-        emit("test", callback=self.getBlindAmount)
-        print("we is out of the call back and can start somethign ")
-        # Start the game 
-        self.gameLoop()
 
-    # Start of the round, cards are given to players 
-    def gameLoop(self):
-        print("we are in the game loop")
+        # Start the game 
+        self.nextPlayer()
+
+    def nextPlayer(self): 
 
          # # Deal 2 cards to each player thats not the dealer  
         # for p in self.players:
@@ -196,7 +180,30 @@ class Game:
             # Find the best card combo wins the pot 
         
         # Restart and move BB and SB
+
+        # Start of the round, cards are given to players 
+        #==============================================================================
+
+
+        # Check if all players did their turn 
+        if(self.currentPlayerTurn == len(self.players)):
+
+            if(len(self.board) == 5):
+                # At the showdown, need to check ppl hand and end game 
+                self.endGame()
+                return 
+
+            # Dealer puts out a new card on board 
+
+
+            return 
+
+
         return 
+
+    def endGame(self):
+        return 
+
 
     def printPlayers(self):
         print("Player currently in game")

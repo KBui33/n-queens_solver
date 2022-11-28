@@ -13,6 +13,17 @@ function App() {
   const [numPlayers, setNumPlayers] = useState([]);
   const [scores, setScores] = useState([]);
   const [curPlayer, setCurplayer] = useState([]);
+  const [playerStatus, setPlayerStatus] = useState("");
+  const [playerName, setPlayerName] = useState("");
+
+  /**
+   *  When the player does the following:
+   *  raise - Raise the amount and next person goes
+   *  call - Make the bet equal to last person and next person goes
+   *  fold - Throw away the cards and next person goes
+   *  check - Go to next player turn (tell the socket to go next)
+   */
+
   const handleClick = () => {
     if (connecting === false) {
       setConnecting(true);
@@ -45,6 +56,7 @@ function App() {
     }
     socketInstance.emit("start_game");
   };
+
   const check = () => {
     socketInstance.emit("check");
   };
@@ -75,6 +87,7 @@ function App() {
     //if it is not you, then make the buttons be deactivated
     //if it is you, then make buttons be activated
   }, [curPlayer]);
+
   useEffect(() => {
     if (connecting === true) {
       /*
