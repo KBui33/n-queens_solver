@@ -80,6 +80,11 @@ function App() {
         // Tell the player that its not ready yet
       });
 
+      socket.on("test", (cb) => {
+        console.log("testing the thing");
+        cb("yes");
+      });
+
       return function cleanup() {
         socket.disconnect();
       };

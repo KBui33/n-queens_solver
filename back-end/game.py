@@ -12,26 +12,20 @@ def send_message(client_id, data):
     emit('output', data, room=client_id)
     print('sending message "{}" to client "{}".'.format(data, client_id))
 
-"""
-Arguemnts: 
-    smallBlind: The index of the current person with the small blind  
-    bigBlind: The index of the current person with the big blind 
-"""
 class Game:
     def __init__(self):
-        self.deck = []
-        self.board = []
-        self.burnedCards = [] 
-        self.players = []
-        self.discardCards = []
-        self.blind = 10
-        self.numPlayers = 0
-        self.game_over = False 
-        self.totalPot = 0 
-        self.round = 0
-        self.smallBlind = 0
-        self.bigBlind = 0 
-        # Need a var for small blind and big blind 
+        self.deck = []              # List of 52 cards 
+        self.board = []             # List of cards that hold the game cards (Flop, Turn, River rounds)
+        self.burnedCards = []       # List of burned cards 
+        self.players = []           # List of players in the game (including the AI)
+        self.blindAmount = 10       # The minimum amount of money needed for betting for the blinds    
+        self.numPlayers = 0         # Amount of players in the game (not including the AI)
+        self.game_over = False      # Game status 
+        self.totalPot = 0           # The total amount of money through each iteration of rounds 
+        self.round = 0              # Current Round 
+        self.smallBlind = 0         # The index of the current person with the small blind  
+        self.bigBlind = 0           # The index of the current person with the big blind 
+
 
     def setPlayerReadyStatus(self, player, stats):
         """
@@ -42,16 +36,17 @@ class Game:
             stats - True or False, the status the player wants to put on 
         """
         # Set the player to ready 
+
         for p in self.players:
             if p.name == player:
                 p.ready = stats
                 break 
 
-        self.printPlayers()
+        # self.printPlayers()
 
         # Check if all players are ready 
         for p in self.players:
-            if not p.ready or len(self.players) <= 4:
+            if not p.ready or len(self.players) < 2:
                 print("Game not ready yet") 
                 # Emit to the players that they need to wait for other players to be ready 
                 # socketio.emit("game_start_status", {msg: "Wait from more ppl to join"})
@@ -60,7 +55,7 @@ class Game:
         
         # Start the game 
         print("it whoudl not be here yet")
-        # self.initGame()
+        self.initGame()
         return 
 
 
@@ -127,7 +122,12 @@ class Game:
                 s += "{\"value\":\"" + str(cards[i].value) + "\", \"suit\":\"" + str(cards[i].suit) + "\"},"
         s += "]"
         return s
-    
+
+    def getBlindAmount(self, cb): 
+        print("we is in the call back, GG bro")
+        print(cb)
+        return 
+        
     # Inital stuff to do when starting the game. Stuff you do before giving the cards 
     def initGame(self):
         # Tell view to change and start the game 
@@ -144,9 +144,10 @@ class Game:
         self.bigBlind = self.smallBlind + 1
         
         # Notify the players with blind to place a bet
-
-
-
+            # Prob need to group the blinds ppl in a room, then send out the thing with their repective amount 
+        emit("test", callback=self.getBlindAmount)
+        print("we is out of the call back and can start somethign ")
+        # Start the game 
         self.gameLoop()
 
     # Start of the round, cards are given to players 
@@ -163,14 +164,17 @@ class Game:
 
         # Once we hit back to the starting person pot is collected 
 
+        # Burn one card  
         # Put 3 cards on the board (The flop)
 
         # The left active player gets to start first. Can put a bet, check, or fold. 
             # If players place bet then everyone needs to put that much until it goes back to that player. Samething if raise happens
          
+        # Burn one card  
         # Add the 4th card (The turn) 
         # Do another betting round (like the one above)
 
+        # Burn one card  
         # 5th card is placed (the River)
         # Do another betting round (like the one above)
 
