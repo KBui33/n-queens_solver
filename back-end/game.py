@@ -1,7 +1,7 @@
 import random
 from card import * 
 from player import *
-from flask_socketio import emit
+from flask_socketio import emit, join_room, leave_room
 try:
     from __main__ import socketio
 except ImportError:
@@ -27,33 +27,6 @@ class Game:
         self.smallBlind = 0         # The index of the current person with the small blind  
         self.bigBlind = 0           # The index of the current person with the big blind    
         self.currentPlayerTurn = 0  # The index of the current turn of the person 
-
-    def setPlayerReadyStatus(self, player, stats):
-        """
-        Readys the player and checks if everyone is ready. If all players ready start game, else emit to wait 
-
-        Args:
-            player - Name of the player or socket id (not sure which one is better so name for now)
-            stats - True or False, the status the player wants to put on 
-        """
-        # Set the player to ready 
-        for p in self.players:
-            if p.name == player:
-                p.ready = stats
-                break 
-
-        # Check if all players are ready 
-        for p in self.players:
-            if not p.ready or len(self.players) < 2:
-                print("Game not ready yet") 
-                # Emit to the players that they need to wait for other players to be ready 
-                # socketio.emit("game_start_status", {msg: "Wait from more ppl to join"})
-                emit("game_start_status", {"message" : "Not all players are ready"})
-                return False 
-        
-        # Start the game 
-        self.initGame()
-        return 
 
     def dealCard(self, player):
         # Takes out cards from the deck and puts them in players hands
@@ -130,10 +103,39 @@ class Game:
                 s += "{\"value\":\"" + str(cards[i].value) + "\", \"suit\":\"" + str(cards[i].suit) + "\"},"
         s += "]"
         return s
+
+    def setPlayerReadyStatus(self, player, stats):
+        """
+        Readys the player and checks if everyone is ready. If all players ready start game, else emit to wait 
+
+        Args:
+            player - Name of the player or socket id (not sure which one is better so name for now)
+            stats - True or False, the status the player wants to put on 
+        """
+        # Set the player to ready 
+        for p in self.players:
+            if p.name == player:
+                p.ready = stats
+                break 
+
+        # Check if all players are ready 
+        for p in self.players:
+            if not p.ready or len(self.players) < 2:
+                print("Game not ready yet") 
+                # Emit to the players that they need to wait for other players to be ready 
+                emit("game_start_status", {"msg": "Wait from more ppl to join", "start": False})
+                return False 
+            
+        # Start the game 
+        self.initGame()
+        return 
         
     # Inital stuff to do when starting the game.
     def initGame(self):
         # Create the deck and shuffle it 
+        print("Starting game")
+        emit("game_start_status", {"msg": "Starting Game", "start": True})
+
         self.initializeCards()
         self.shuffleDeck()
 
@@ -145,7 +147,14 @@ class Game:
         
         # Notify the players with blind to place a bet
             # Prob need to group the blinds ppl in a room, then send out the thing with their repective amount 
-        emit()
+        room = 'blindRoom'
+        smallId = self.players[self.smallBlind].id
+        bigId = self.players[self.bigBlind].id
+
+        join_room(room, smallId)
+        join_room(room, bigId)
+        emit(f"Users {smallId} and {bigId} has joined the room, please put in a betting amount", to=room)
+
         # Start the game 
 
         # Deal 2 cards to each player thats not the dealer  

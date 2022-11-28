@@ -14,6 +14,7 @@ class Player:
         self.money = m
         self.curBet = 0
         self.fold = False
+        self.ready = False
 
     def dealHand(self, deck):
         for i in range(0, self.handSize):

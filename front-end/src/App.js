@@ -13,6 +13,9 @@ function App() {
   const [numPlayers, setNumPlayers] = useState([]);
   const [scores, setScores] = useState([]);
   const [curPlayer, setCurplayer] = useState([]);
+
+  const [start, setStart] = useState(false);
+
   const [playerStatus, setPlayerStatus] = useState("");
   const [playerName, setPlayerName] = useState("");
 
@@ -24,36 +27,20 @@ function App() {
    *  check - Go to next player turn (tell the socket to go next)
    */
 
-  const handleClick = () => {
-    if (connecting === false) {
-      setConnecting(true);
-    } else {
-      setConnecting(false);
-    }
-  };
-
-  const highlight = (field, msg) => {
-    field.className = "m-2 p-1 border-solid border-2 border-red";
-    let m = document.createElement("p");
-    m.setAttribute("id", `${field.getAttribute("id")}Msg`);
-    m.innerHTML = msg;
-    m.className = "text-red-600";
-    field.parentElement.appendChild(m);
-  };
-  const removeHighlight = (field) => {
-    field.className = "m-2 p-1 border-solid border-2 border-black";
-    let m = document.getElementById(field.getAttribute("id") + "Msg");
-    if (m === null) return;
-    else m.remove();
-  };
-
-  const startGame = () => {
-    if (!socketInstance) {
-      console.log("Please connect to the game first");
-      return;
-    }
-    socketInstance.emit("start_game");
-  };
+  // const highlight = (field, msg) => {
+  //   field.className = "m-2 p-1 border-solid border-2 border-red";
+  //   let m = document.createElement("p");
+  //   m.setAttribute("id", `${field.getAttribute("id")}Msg`);
+  //   m.innerHTML = msg;
+  //   m.className = "text-red-600";
+  //   field.parentElement.appendChild(m);
+  // };
+  // const removeHighlight = (field) => {
+  //   field.className = "m-2 p-1 border-solid border-2 border-black";
+  //   let m = document.getElementById(field.getAttribute("id") + "Msg");
+  //   if (m === null) return;
+  //   else m.remove();
+  // };
 
   const check = () => {
     socketInstance.emit("check");
@@ -115,8 +102,6 @@ function App() {
         // setNumPlayers(res.data.numPlayers);
       });
 
-      // setLoading(false);
-
       socket.on("disconnect", (res) => {
         if (!res) return;
         setNumPlayers(res.data.numPlayers);
@@ -129,10 +114,6 @@ function App() {
 
       socket.on("output", (res) => {
         setHand(JSON.parse(res.cards));
-      });
-
-      socket.on("numPlayers", (res) => {
-        setNumPlayers(res);
       });
 
       socket.on("notEnoughPlayers", (res) => {
@@ -156,8 +137,15 @@ function App() {
         setCurplayer(res.data.turn);
       });
 
-      socket.on("players", (data) => {
-        console.log(data);
+      socket.on("game_start_status", (res) => {
+        console.log(res);
+
+        if (res.start) {
+          // Change the view
+        } else {
+          console.log(res.start);
+          alert(res.msg);
+        }
       });
 
       /*
@@ -166,57 +154,58 @@ function App() {
 
       //make request asking for blind size
 
-      let input = document.getElementById("wager"); /*eslint no-undef: "error"*/
-      let name = document.getElementById("name"); /*eslint no-undef: "error"*/
-      if (typeof input === "undefined") {
-        //change wager's classname
-        console.log("ERROR input not found");
-        setConnecting(false);
-        return;
-      }
-      if (typeof name === "undefined") {
-        //change name's classname
-        console.log("ERROR name not found");
-        setConnecting(false);
-        return;
-      }
-      let val = parseInt(input.value);
-      if (val > 0) {
-        axios.get("/blind").then((res) => {
-          // setBlind(res);
-          let data = res.data;
-          if (data.error) {
-            console.log("ERROR: game not initialized");
-          }
-          let blind = data.success;
-          //if wager < blind, do not connect
-          if (input.value < blind) {
-            //highlight input value
-            highlight(input, `must be bigger than ${blind}`);
-            //change wager's className
-            return;
-          } else {
-            //have this player join the game
-            //remove highlight on all inputs
-            removeHighlight(input);
-            removeHighlight(name);
-            let form = document.getElementById("form");
-            form.className = "hidden";
-            socket.emit("join", input.value, name.value);
-            return;
-          }
-        });
-      }
-      if (val <= 0) {
-        //highlight wager input
-        highlight(input, `you must enter a value > 0`);
-        setConnecting(false);
-      }
-      if (name.value == "") {
-        //highlight name input
-        highlight(name, `you must enter a name`);
-        setConnecting(false);
-      }
+      // let input = document.getElementById("wager"); /*eslint no-undef: "error"*/
+      // let name = document.getElementById("name"); /*eslint no-undef: "error"*/
+      // if (typeof input === "undefined") {
+      //   //change wager's classname
+      //   console.log("ERROR input not found");
+      //   setConnecting(false);
+      //   return;
+      // }
+      // if (typeof name === "undefined") {
+      //   //change name's classname
+      //   console.log("ERROR name not found");
+      //   setConnecting(false);
+      //   return;
+      // }
+      // let val = parseInt(input.value);
+      // if (val > 0) {
+      //   axios.get("/blind").then((res) => {
+      //     // setBlind(res);
+      //     let data = res.data;
+      //     if (data.error) {
+      //       console.log("ERROR: game not initialized");
+      //     }
+      //     let blind = data.success;
+      //     //if wager < blind, do not connect
+      //     if (input.value < blind) {
+      //       //highlight input value
+      //       highlight(input, `must be bigger than ${blind}`);
+      //       //change wager's className
+      //       return;
+      //     } else {
+      //       //have this player join the game
+      //       //remove highlight on all inputs
+      //       removeHighlight(input);
+      //       removeHighlight(name);
+      //       let form = document.getElementById("form");
+      //       form.className = "hidden";
+      //       socket.emit("join", input.value, name.value);
+      //       return;
+      //     }
+      //   });
+      // }
+
+      // if (val <= 0) {
+      //   //highlight wager input
+      //   highlight(input, `you must enter a value > 0`);
+      //   setConnecting(false);
+      // }
+      // if (name.value == "") {
+      //   //highlight name input
+      //   highlight(name, `you must enter a name`);
+      //   setConnecting(false);
+      // }
 
       return function cleanup() {
         socket.disconnect();
@@ -228,7 +217,36 @@ function App() {
   // Game starts and view changes
   return (
     <div className="App">
-      <form id="form">
+      {start ? (
+        <div></div>
+      ) : (
+        <div id="game">
+          {connecting ? (
+            <div>
+              <p># of Players: {numPlayers}</p>
+              <button
+                className={playerStatus ? "ready" : "not-ready"}
+                onClick={() => setPlayerStatus((current) => !current)}
+              >
+                Ready
+              </button>
+            </div>
+          ) : (
+            <div id="join">
+              <input
+                style={{ border: "solid black" }}
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+              />
+              <button onClick={() => setConnecting((current) => !current)}>
+                Connect to Game
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* <form id="form">
         <label htmlFor="wager" className="text-2xl text-black p-4">
           How much would you like to wager? Blind is $10
         </label>
@@ -245,52 +263,28 @@ function App() {
           className="m-2 p-1 border-solid border-2 border-black"
           id="name"
         ></input>
-      </form>
-      <div id="game">
-        {connecting ? (
-          <div>
-            <p># of Players: {numPlayers}</p>
-            <button
-              className={playerStatus ? "ready" : "not-ready"}
-              onClick={() => setPlayerStatus((current) => !current)}
-            >
-              Ready
-            </button>
-
-            {hand != null ? (
-              <div id="gameContent">
-                <div id="river"></div>
-                <div id="hand">
-                  {hand.map((item) => {
-                    return <Card key={JSON.stringify(item)} card={item} />;
-                  })}
-                </div>
-                <button onClick={check}>Check</button>
-                <form>
-                  <input type="number" id="raiseInput"></input>
-                  <button onClick={raise}>Raise</button>
-                </form>
-                <button onClick={fold}>Fold</button>
-              </div>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        ) : (
-          <div />
-        )}
-      </div>
-      <div id="cardContent">
-        {/* {connecting ? (
-          hand.map(function (card, i) {
-            return <Card card={card} key={i} />;
-          })
-        ) : (
-          <div></div>
-        )} */}
-      </div>
+      </form> */}
     </div>
   );
 }
 
 export default App;
+
+// {hand != null ? (
+//   <div id="gameContent">
+//     <div id="river"></div>
+//     <div id="hand">
+//       {hand.map((item) => {
+//         return <Card key={JSON.stringify(item)} card={item} />;
+//       })}
+//     </div>
+//     <button onClick={check}>Check</button>
+//     <form>
+//       <input type="number" id="raiseInput"></input>
+//       <button onClick={raise}>Raise</button>
+//     </form>
+//     <button onClick={fold}>Fold</button>
+//   </div>
+// ) : (
+//   <div></div>
+// )}

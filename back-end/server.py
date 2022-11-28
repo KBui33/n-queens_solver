@@ -105,13 +105,6 @@ def start_game():
 
     #emit scoreboard to all players
     emit("scoreboard", game.getScoreboard(), room=clients)
-    #determine the total # of players before starting    
-    # result = game.start_game()
-    # if(result == True):
-    #     #game has run as normal
-    #     return
-    # else:
-    #     emit("notEnoughPlayers", room=request.sid)
 
 #a call whenever a new connection is established. this does not mean that the current connection is a player
 @socketio.on("connect")
@@ -124,6 +117,11 @@ def connected():
     clients.append(request.sid)
     print("client has connected")
 
+@socketio.on("ready_player")
+def ready_player(data):
+    print(data)
+    
+    game.setPlayerReadyStatus(data["playerName"], data["status"])
 
 @socketio.on("set_name")
 def set_name(name):
@@ -170,12 +168,6 @@ def disconnected():
     clients.remove(request.sid)
     print("user {} disconnected", n)
     emit("disconnect",{"data":{"id":request.sid, "name":n, "numPlayers":game.numPlayers}}, broadcast=True)
-
-@socketio.on("ready_player")
-def ready_player(data):
-    print(data)
-    
-    game.setPlayerReadyStatus(data["playerName"], data["status"])
 
 
 def send_message(client_id, data):
