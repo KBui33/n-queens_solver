@@ -31,6 +31,7 @@ function App() {
       setConnecting(false);
     }
   };
+
   const highlight = (field, msg) => {
     field.className = "m-2 p-1 border-solid border-2 border-red";
     let m = document.createElement("p");
@@ -47,9 +48,6 @@ function App() {
   };
 
   const startGame = () => {
-    // axios.get("/start_game").then((res) => {
-    //   console.log(res);
-    // });
     if (!socketInstance) {
       console.log("Please connect to the game first");
       return;
@@ -60,6 +58,11 @@ function App() {
   const check = () => {
     socketInstance.emit("check");
   };
+
+  const fold = () => {
+    socketInstance.emit("fold");
+  };
+
   const raise = () => {
     let val = document.getElementById("raiseInput").value;
     console.log(val);
@@ -68,9 +71,6 @@ function App() {
       return;
     }
     socketInstance.emit("raise", val);
-  };
-  const fold = () => {
-    socketInstance.emit("fold");
   };
 
   // Set the player ready status
@@ -277,14 +277,7 @@ function App() {
             )}
           </div>
         ) : (
-          <div id="join">
-            <input
-              style={{ border: "solid black" }}
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-            />
-            <button onClick={handleClick}>Connect to Game</button>
-          </div>
+          <div />
         )}
       </div>
       <div id="cardContent">

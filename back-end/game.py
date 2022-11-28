@@ -18,9 +18,10 @@ class Game:
         self.board = []             # List of cards that hold the game cards (Flop, Turn, River rounds)
         self.burnedCards = []       # List of burned cards 
         self.players = []           # List of players in the game (including the AI)
+        self.activePlayers = []     # List of players that have not folded 
         self.blindAmount = 10       # The minimum amount of money needed for betting for the blinds    
         self.numPlayers = 0         # Amount of players in the game (not including the AI)
-        self.game_over = False      # Game status 
+        self.gameOver = False       # Game status 
         self.totalPot = 0           # The total amount of money through each iteration of rounds 
         self.round = 0              # Current Round 
         self.smallBlind = 0         # The index of the current person with the small blind  
@@ -58,7 +59,6 @@ class Game:
         # Takes out cards from the deck and puts them in players hands
         card = self.deck.pop(0)
         player.hand.append(card)
-        return 
 
     def collectCards(self):
         # Takes all the cards out of all players hands and puts in back into the deck
@@ -131,7 +131,7 @@ class Game:
         s += "]"
         return s
         
-    # Inital stuff to do when starting the game. Stuff you do before giving the cards 
+    # Inital stuff to do when starting the game.
     def initGame(self):
         # Create the deck and shuffle it 
         self.initializeCards()
@@ -145,17 +145,17 @@ class Game:
         
         # Notify the players with blind to place a bet
             # Prob need to group the blinds ppl in a room, then send out the thing with their repective amount 
-
+        emit()
         # Start the game 
-        self.nextPlayer()
 
-    def nextPlayer(self): 
+        # Deal 2 cards to each player thats not the dealer  
+        for p in self.players:
+            self.dealCard(p)
+            self.dealCard(p)
+        
 
-         # # Deal 2 cards to each player thats not the dealer  
-        # for p in self.players:
-        #     if (not p.dealer):
-        #         self.dealCard(p)
-        #         self.dealCard(p)
+    def nextRound(self): 
+        # Go through each player and see what they do 
 
         # The person next to the big blind starts. Players either call, raise or fold 
 
@@ -174,35 +174,54 @@ class Game:
         # Burn one card  
         # 5th card is placed (the River)
         # Do another betting round (like the one above)
-
-
-        # Showdown, everyone shows their cards. 
-            # Find the best card combo wins the pot 
-        
-        # Restart and move BB and SB
-
-        # Start of the round, cards are given to players 
         #==============================================================================
-
-
+        
+        self.updateStatus()
         # Check if all players did their turn 
-        if(self.currentPlayerTurn == len(self.players)):
+        if(self.currentPlayerTurn + 1 == len(self.activePlayers)):
 
             if(len(self.board) == 5):
                 # At the showdown, need to check ppl hand and end game 
                 self.endGame()
                 return 
 
-            # Dealer puts out a new card on board 
+            # Dealer burns a card 
+            self.burnedCards.append(self.deck.pop(0))
 
+            # Starting round
+            if (self.round == 0):
+                # The flop cards 
+                for _ in range(3):
+                    self.board.append(self.deck.pop(0))
+            else: 
+                # The turn and river
+                self.board.append(self.deck.pop(0))
 
-            return 
+            # reset and go back to the person who is left of the dealer 
+            self.currentPlayerTurn = 0
+        
+        # Go to next player 
+        self.currentPlayerTurn += 1
 
-
+        # Get the player
+        player = self.activePlayers[self.currentPlayerTurn]
+        # Emitt to the player that it is their turn 
+        emit('player_turn', "Its your turn", room=player.ida)
         return 
 
     def endGame(self):
+          # Showdown, everyone shows their cards. 
+            # Find the best card combo wins the pot 
+        
+        # Restart and move BB and SB
+
+        # Start of the round, cards are given to players 
         return 
+
+    def updateStatus(self):
+        for p in self.players:
+            if p.fold == False: 
+                self.activePlayers.append(p)
 
 
     def printPlayers(self):

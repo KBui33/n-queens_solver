@@ -177,8 +177,6 @@ def ready_player(data):
     
     game.setPlayerReadyStatus(data["playerName"], data["status"])
 
-# import game
-
 
 def send_message(client_id, data):
     socketio.emit('output', data, room=client_id)
