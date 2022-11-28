@@ -147,15 +147,14 @@ class Game:
         
         # Notify the players with blind to place a bet
             # Prob need to group the blinds ppl in a room, then send out the thing with their repective amount 
-        room = 'blindRoom'
+        # room = 'blindRoom'
         smallId = self.players[self.smallBlind].id
         bigId = self.players[self.bigBlind].id
 
         print(f"Small blind ${smallId}, Big blind ${bigId}")
 
-        join_room(room, smallId)
-        join_room(room, bigId)
-        emit("blind", f"Users {smallId} and {bigId} has joined the room, please put in a betting amount", to=room)
+        emit("blind", f"You are the small blind.", to=smallId)
+        emit("blind", f"You are the big blind", to=bigId)
 
         # Start the game 
 

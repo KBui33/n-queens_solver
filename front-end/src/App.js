@@ -253,7 +253,10 @@ function App() {
         // ) : (
         //   <div></div>
         // )
-        <MoveOptions check={check} raise={raise} call={call} fold={fold} />
+
+        <div className="dashboard">
+          <MoveOptions check={check} raise={raise} call={call} fold={fold} />
+        </div>
       ) : (
         <div id="game">
           {connecting ? (
