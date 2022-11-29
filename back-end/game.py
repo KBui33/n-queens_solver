@@ -2,6 +2,7 @@ import random
 from card import *
 from player import *
 from flask_socketio import emit, join_room, leave_room, send
+from itertools import combinations
 try:
     from __main__ import socketio
 except ImportError:
@@ -239,23 +240,38 @@ class Game:
         # Start of the round, cards are given to players
         return
 
-    def findHighestHand(self):
-        # Find the player with the highest hand
-
+    def findHighestHand(self, player):
+        """
+        Given the player, find the best combination the player can have 
+        Return cards with the highest ranking + highest total
+        """
+        # Rankings are based off the index number, the higher the number the better the hand
         handRanking = ['High Card', 'Pair', 'Three of a kind', 'Straight',
                        'Flush', 'Full House', 'Four of a Kind', 'Straight Flush', 'Royal Flush']
 
-        return
+        # Create combinations of length 5
+        combos = combinations(player.hand + self.board, 5)
 
-    def determine_hand(self, cards):
+        handCombos = []  # Used to determine ties. If we have hands with the same rank, need to look at the total to see the better one
+        # Go through each combo and determine which one is the best hand combo.
+        for idx, c in enumerate(combos):
+            handRank = self.determineHand(c)
+            handTotal = sum([card.value for card in c])
+
+            handCombos.append((handRanking.index(handRank), handTotal, idx))
+
+        return combos[max(handCombos)[2]]
+
+    def determineHand(self, cards):
         """ 
-        Determine why type of hand the cards are 
+        Determine the type of hand of 5 cards 
         i.e. This hand is a pair
         Return a string of hand type 
         """
         suits = [card.suit for card in cards]  # Get all the suits from hand
         ranks = [card.value for card in cards]  # Get all the value from hand
 
+        # There is a straight, determine if it can be better
         if self.isConsecutive(ranks):
             return (
                 'Straight' if not len(set(suits)) != 1 else
@@ -263,17 +279,19 @@ class Game:
                 'Royal flush'
             )
 
+        # There are no duplicates which means that all the ranks are the same
         if len(set(suits)) == 1:
             return "Flush"
 
-        return {
+        # Count the amount repetitions in the set for each element
+        return ({
             4 + 4 + 4 + 4 + 1: 'Four of a kind',
             3 + 3 + 3 + 2 + 2: 'Full house',
             3 + 3 + 3 + 1 + 1: 'Three of a kind',
             2 + 2 + 2 + 2 + 1: 'Two pair',
             2 + 2 + 1 + 1 + 1: 'One pair',
             1 + 1 + 1 + 1 + 1: 'High card',
-        }[sum(ranks.count(r) for r in ranks)]
+        }[sum(ranks.count(r) for r in ranks)], sum(ranks))
 
     def isConsecutive(self, lst):
         """
