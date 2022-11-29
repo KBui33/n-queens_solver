@@ -20,6 +20,9 @@ function App() {
   const [playerStatus, setPlayerStatus] = useState("");
   const [playerName, setPlayerName] = useState("");
 
+  const [blind, setBlind] = useState("");
+  const [cash, setCash] = useState("");
+
   /**
    *  When the player does the following:
    *  raise - Raise the amount and next person goes
@@ -42,6 +45,10 @@ function App() {
   //   if (m === null) return;
   //   else m.remove();
   // };
+
+  useEffect(() => {
+    // Set the starting cash amount
+  }, []);
 
   const check = () => {
     //    socketInstance.emit("check");
@@ -162,6 +169,7 @@ function App() {
 
       socket.on("blind", (res) => {
         console.log(res);
+        setBlind(res);
       });
 
       /*
@@ -255,6 +263,9 @@ function App() {
         // )
 
         <div className="dashboard">
+          <h1>{blind}</h1>
+
+          <h1 className="cash-amount">{cash}</h1>
           <MoveOptions check={check} raise={raise} call={call} fold={fold} />
         </div>
       ) : (
@@ -283,8 +294,14 @@ function App() {
           )}
         </div>
       )}
+    </div>
+  );
+}
 
-      {/* <form id="form">
+export default App;
+
+{
+  /* <form id="form">
         <label htmlFor="wager" className="text-2xl text-black p-4">
           How much would you like to wager? Blind is $10
         </label>
@@ -301,9 +318,5 @@ function App() {
           className="m-2 p-1 border-solid border-2 border-black"
           id="name"
         ></input>
-      </form> */}
-    </div>
-  );
+      </form> */
 }
-
-export default App;

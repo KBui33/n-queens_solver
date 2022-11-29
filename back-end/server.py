@@ -95,7 +95,10 @@ def call():
                 return
 
 @socketio.on("blind")
-def blind():
+def blind(data):
+    
+    
+    
     return 
 
 #this is the call to initialize the game and start the first round

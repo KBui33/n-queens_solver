@@ -6,6 +6,8 @@ class Player:
         self.handSize = 2       # The amount of cards a player can have
         self.money= 1000        # Starting money 
         self.curBet = 0         # Amount the player has put in a bet 
+        self.fold = False
+        self.ready = False
     def __init__(self, n, pid, m):
         self.name = n
         self.id = pid
