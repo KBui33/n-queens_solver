@@ -234,6 +234,10 @@ class Game:
     def endGame(self):
         # Showdown, everyone shows their cards.
         # Find the best card combo wins the pot
+        hand = None
+
+        for p in self.players:
+            currentHand = self.findHighestHand(p)
 
         # Restart and move BB and SB
 
@@ -242,7 +246,7 @@ class Game:
 
     def findHighestHand(self, player):
         """
-        Given the player, find the best combination the player can have 
+        Given a player, find the best combination the player can have 
         Return cards with the highest ranking + highest total
         """
         # Rankings are based off the index number, the higher the number the better the hand
