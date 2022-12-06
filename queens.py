@@ -5,8 +5,6 @@ class nQueens:
     def __init__(self, n):
         self.n = n
         self.population = []
-        self.fitnessPop = {}
-        pass
     
     def isAttacking(self, pos1, pos2, board):
         #check up, down, left, right, d-left, d-right, u-left, u-right
@@ -148,15 +146,13 @@ class nQueens:
                 child += y[i]
         return child
 
-
     def mutation(self, x):
-        z = random.randint(0, len(x) - 2)
+        z = random.randint(0, len(x) - 1)
         val = str(random.randint(0, self.n - 1))
         # mutated = x[:z] + str(val) + x[z+1:]
         mutated = list(x)
         mutated[z] = val
         return "".join(mutated)
-    
     
     def boardFromString(self, x):
         #return a list [][] which is the board associated with bitstring x
@@ -169,7 +165,6 @@ class nQueens:
 
     def boardToString(self, board):
         # Returns a string representation of the board
-
         bitString = ""
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -184,6 +179,16 @@ class nQueens:
 
         for _ in range(size):
             initBoard = [["0" for _ in range(self.n)] for _ in range(self.n)]
+            # initBoard = board
+
+            # i = 0
+            # while i < self.n:
+            #     row = random.randrange(self.n)
+            #     if initBoard[row][i] == "w":
+            #         continue
+            #     else:
+            #         initBoard[row][i] = "Q"
+            #         i += 1
 
             for j in range(self.n):
                 row = random.randrange(self.n)
@@ -215,7 +220,18 @@ class nQueens:
         return prevEntry[0]
 
     def solve(self, m): 
-        # This is the genetic algorithm 
+        """""
+        m - The amount of populations that can be made (Int)
+        walls - A 2D array of the board that includes walls (Str[][])
+        
+        """""
+
+        if self.n < 4:
+            print(f"Invalid input {self.n}")
+            return 
+
+        # Check if the array is valid
+        # self.checkWalls(walls)
 
         # init population 
         self.initPopulation(m)
@@ -255,7 +271,6 @@ class nQueens:
             sortedDict = sorted(self.population, key=lambda item: item[1])
             # print(sortedDict)
 
-
             for i in range(len(sortedDict)):
                 toRemove = sortedDict[i]
                 self.population.remove(toRemove)
@@ -268,21 +283,36 @@ class nQueens:
         return False 
 
 
-print(f"FINAL ANS: {nQueens(10).solve(5)}")
-# n=20
-# m= 4 # inital population size
-# make random bitstrings at size n, with rajndom queens in them 
-# M = [12320312031231, (), (), ()]
+class WallNQueens(nQueens):
 
-# n=4
-# 0000, 0001, 0002, 0003
-# 1/4, 1/3, 1/3, 1/3
-# n = 4
-# choose n/2 elements in M and perform genetic()
-# pop+= m(g(0002, 0001))
-# pop+= m(g(0002, 0003))
+    def fitness(self, x):
+        return 
+    
+    def initPopulation(self, size):
+        return 
 
-# kill the n/2 least fit in population
+    def checkWalls(self, walls):
+        if len(walls) != self.n: return False
+
+        for i in walls:
+            if len(i) != self.n: return False
+
+        return True 
+
+    def solve(self):
+        return 
+    pass
+
+print("TEST CASES")
+#print(f"FINAL ANS: {nQueens(1).solve(1)}")
+# print(f"FINAL ANS: {nQueens(3).solve(6)}")
+print(f"FINAL ANS: {nQueens(4).solve(5)}")
+print(f"FINAL ANS: {nQueens(4).solve(10)}")
+print(f"FINAL ANS: {nQueens(4).solve(20)}")
+print(f"FINAL ANS: {nQueens(10).solve(20)}")
+print(f"FINAL ANS: {nQueens(10).solve(100)}")
+print(f"FINAL ANS: {nQueens(100).solve(5)}")
+print(f"FINAL ANS: {nQueens(100).solve(5)}")
 
 """"
 Q000
@@ -306,10 +336,21 @@ if f[x] == '0000':
     add to true solutions
     
     
-00000
-00000
-00000
-00000
-00000
+000
+000
+000
+
+
+Input - nQueen(5).solve(5, [[][]])
+
+Possible solution 
+
+walls are rep as "w"
+    
+[[00000],
+[00000],
+[0w000],
+[0w000],
+[00000]]
 
 """""
