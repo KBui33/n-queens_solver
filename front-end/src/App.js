@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -74,7 +75,13 @@ function App() {
     }
   };
 
-  const getCombos = () => {};
+  const getCombos = async () => {
+    await axios
+      .get("/combo", { data: { rightWall, bottomWall } })
+      .then((res) => {
+        console.log(res);
+      });
+  };
 
   return (
     <div className="App">
@@ -119,7 +126,9 @@ function App() {
       </div>
       <div className="options">
         <input value={size} onChange={test}></input>
-        <button className="start-btn">Get Combos</button>
+        <button className="start-btn" onClick={getCombos}>
+          Get Combos
+        </button>
       </div>
     </div>
   );
