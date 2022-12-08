@@ -21,8 +21,13 @@ def get_combo():
     else:
         return 'Content-Type not supported!'
 
-    print(json)
-    return "it worked"
+    print(json["n"])
+    queen = nQueens(json["n"])
+    combo = queen.solve(4)
+    print(combo)
+    board = queen.boardFromString(combo)
+    print(board)
+    return board
 
 
 if __name__ == '__main__':

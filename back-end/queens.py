@@ -226,7 +226,6 @@ class nQueens:
         walls - A 2D array of the board that includes walls (Str[][])
 
         """""
-
         if self.n < 4:
             print(f"Invalid input {self.n}")
             return

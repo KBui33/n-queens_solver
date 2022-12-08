@@ -20,7 +20,7 @@ function App() {
     for (var i = 0; i < size; i++) {
       let temp = [];
       for (var j = 0; j < size; j++) {
-        temp.push(0);
+        temp.push(" ");
       }
       board.push(temp);
     }
@@ -80,10 +80,13 @@ function App() {
       .post("http://localhost:5000/combo", {
         rightWall: rightWall,
         bottomWall: bottomWall,
+        n: parseInt(size),
       })
       .then((res) => {
         console.log(res);
-      });
+        setBoard(res.data);
+      })
+      .catch((err) => alert("an error occured"));
 
     // await axios.get("http://localhost:5000z /").then((res) => console.log(res));
   };
@@ -122,6 +125,7 @@ function App() {
                     ) : (
                       <div />
                     )}
+                    {subItem}
                   </div>
                 );
               })}
