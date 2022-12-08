@@ -77,10 +77,15 @@ function App() {
 
   const getCombos = async () => {
     await axios
-      .get("/combo", { data: { rightWall, bottomWall } })
+      .post("http://localhost:5000/combo", {
+        rightWall: rightWall,
+        bottomWall: bottomWall,
+      })
       .then((res) => {
         console.log(res);
       });
+
+    // await axios.get("http://localhost:5000z /").then((res) => console.log(res));
   };
 
   return (

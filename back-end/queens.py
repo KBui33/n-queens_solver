@@ -1,146 +1,147 @@
-import random 
+import random
 import math
+
 
 class nQueens:
     def __init__(self, n):
         self.n = n
         self.population = []
-    
+
     def isAttacking(self, pos1, pos2, board):
-        #check up, down, left, right, d-left, d-right, u-left, u-right
-        #down
+        # check up, down, left, right, d-left, d-right, u-left, u-right
+        # down
         p = (pos1[0]+1, pos1[1])
-        while(p[0] < len(board)):
+        while (p[0] < len(board)):
            # print("down")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]+1, p[1])
-        #up
+        # up
         p = (pos1[0]-1, pos1[1])
-        while(p[0] >= 0):
+        while (p[0] >= 0):
             # print('up')
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]-1, p[1])
-        #left
+        # left
         p = (pos1[0], pos1[1]-1)
-        while(p[1] >= 0):
+        while (p[1] >= 0):
             # print("left")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0], p[1] - 1)
-        #right
+        # right
         p = (pos1[0], pos1[1] + 1)
-        while(p[1] < len(board[p[0]])):
+        while (p[1] < len(board[p[0]])):
             # print("right")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0], p[1]+1)
-        #ul
+        # ul
         p = (pos1[0]-1, pos1[1]-1)
-        while(p[0] >= 0 and p[1] >= 0):
+        while (p[0] >= 0 and p[1] >= 0):
             # print("ul")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]-1, p[1]-1)
-        #ur
-        p = (pos1[0]-1 , pos1[1] + 1)
-        while(p[0] >= 0 and p[1] < len(board[p[0]])):
+        # ur
+        p = (pos1[0]-1, pos1[1] + 1)
+        while (p[0] >= 0 and p[1] < len(board[p[0]])):
             # print("ur")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]-1, p[1]+1)
-        #dl
-        p = (pos1[0]+1,pos1[1]-1)
-        while(p[0] < len(board) and p[1] >= 0):
-            #print("dl")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+        # dl
+        p = (pos1[0]+1, pos1[1]-1)
+        while (p[0] < len(board) and p[1] >= 0):
+            # print("dl")
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]+1, p[1]-1)
-        #dr
+        # dr
         p = (pos1[0]+1, pos1[1] + 1)
-        while(p[0] < len(board) and p[1] < len(board[p[0]])):
-            #print("dr")
-            if(board[p[0]][p[1]] == "Q"):
-                if(p == pos2):
+        while (p[0] < len(board) and p[1] < len(board[p[0]])):
+            # print("dr")
+            if (board[p[0]][p[1]] == "Q"):
+                if (p == pos2):
                     return True
                 else:
-                    #this is a different queen blocking this direction, as such stop iterating in this direction
+                    # this is a different queen blocking this direction, as such stop iterating in this direction
                     break
             else:
                 pass
             p = (p[0]+1, p[1] + 1)
         return False
-    
+
     def fitness(self, x):
-        # x - bit strings of the current board 
-        # fitness of a board is defined by the number of 
- 
-        #fitness is defined as the total number of nonattacking pairs
+        # x - bit strings of the current board
+        # fitness of a board is defined by the number of
+
+        # fitness is defined as the total number of nonattacking pairs
         board = self.boardFromString(x)
-        #for every queen, check if they are attacking every other queen
+        # for every queen, check if they are attacking every other queen
         notattackingpairs = 0
         for i in range(0, len(x)):
             q1 = x[i]
             for j in range(0, len(x)):
                 q2 = x[j]
-                if(q1 == q2):
+                if (q1 == q2):
                     continue
-                if(not self.isAttacking((int(q1), i), (int(q2), j), board)):
-                    notattackingpairs +=1
+                if (not self.isAttacking((int(q1), i), (int(q2), j), board)):
+                    notattackingpairs += 1
         return notattackingpairs
 
     def genetic(self, x, y):
-        #x, y - bitstring representation of a board
-        
-        if(len(x) != len(y)):
+        # x, y - bitstring representation of a board
+
+        if (len(x) != len(y)):
             return None
         child = ""
         for i in range(0, len(x)):
             rng = random.randint(0, 9)
-            if(rng < 5):
+            if (rng < 5):
                 child += x[i]
             else:
                 child += y[i]
@@ -153,13 +154,13 @@ class nQueens:
         mutated = list(x)
         mutated[z] = val
         return "".join(mutated)
-    
+
     def boardFromString(self, x):
-        #return a list [][] which is the board associated with bitstring x
+        # return a list [][] which is the board associated with bitstring x
         board = [[" " for _ in range(self.n)] for _ in range(self.n)]
         # init board
 
-        for i in range(0, len(x)): 
+        for i in range(0, len(x)):
             board[int(x[i])][i] = "Q"
         return board
 
@@ -169,13 +170,13 @@ class nQueens:
         for i in range(len(board)):
             for j in range(len(board[i])):
                 value = board[j][i]
-                if(value == "Q"):
+                if (value == "Q"):
                     bitString += str(j)
-                    
+
         return bitString
-        
+
     def initPopulation(self, size):
-        # Initalizes a population 
+        # Initalizes a population
 
         for _ in range(size):
             initBoard = [["0" for _ in range(self.n)] for _ in range(self.n)]
@@ -193,77 +194,77 @@ class nQueens:
             for j in range(self.n):
                 row = random.randrange(self.n)
                 initBoard[row][j] = "Q"
-                
+
             # print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in initBoard]))
             boardStr = self.boardToString(initBoard)
             print(boardStr)
             self.population.append((boardStr, self.fitness(boardStr)))
-        return 
+        return
 
     def selectParent(self, pop):
-        #for each element in self.population compute and store x=(1, ..., n+1) of w(x) = 2^(-x)
+        # for each element in self.population compute and store x=(1, ..., n+1) of w(x) = 2^(-x)
         # Calcs the probability of a population being used for combo
-        probabilities =[]
-        x=1
+        probabilities = []
+        x = 1
         for (k, v) in pop:
             probabilities.append(((k, v), 2**(-x)))
-            x+=1
+            x += 1
         lottery = random.random()
         prevEntry = None
         for ((k, v), w) in probabilities:
-            if(lottery < w):
-                if(prevEntry == None):
+            if (lottery < w):
+                if (prevEntry == None):
                     prevEntry = ((k, v), w)
                 return prevEntry[0]
             else:
                 prevEntry = ((k, v), w)
         return prevEntry[0]
 
-    def solve(self, m): 
+    def solve(self, m):
         """""
         m - The amount of populations that can be made (Int)
         walls - A 2D array of the board that includes walls (Str[][])
-        
+
         """""
 
         if self.n < 4:
             print(f"Invalid input {self.n}")
-            return 
+            return
 
         # Check if the array is valid
         # self.checkWalls(walls)
 
-        # init population 
+        # init population
         self.initPopulation(m)
         op = 0
-                
+
         #m = self.population.items()
-        while True: 
+        while True:
             for (k, v) in self.population:
-                if(v == self.n*(self.n-1)):
+                if (v == self.n*(self.n-1)):
                     return k
-            #selecting the parents should have a higher probability to select higher fitness values
-            #we can map each population item to a % change that they will be chosen
-            #choose parents based on the above mentioned odds
-            #for i in range(0, m) self.population[i][0], self.population[i][1]
+            # selecting the parents should have a higher probability to select higher fitness values
+            # we can map each population item to a % change that they will be chosen
+            # choose parents based on the above mentioned odds
+            # for i in range(0, m) self.population[i][0], self.population[i][1]
 
             # print(f"Current len of pop: {len(self.population)}")
 
             for i in range(0, m):
                 parent1Key = self.selectParent(self.population)[0]
                 parent2Key = self.selectParent(self.population)[0]
-                #[0.5*f1, 0.25*f2, 0.1225*f3, 0.6121*f4, ...] = 1
+                # [0.5*f1, 0.25*f2, 0.1225*f3, 0.6121*f4, ...] = 1
                 # print(f"Parent 1: {parent1Key}, Parent 2: {parent2Key}")
-                
-                # Create the new child from combining the 2 parents 
+
+                # Create the new child from combining the 2 parents
                 child = self.mutation(self.genetic(parent1Key, parent2Key))
-                
+
                 # print(f"New Child: {child}")
-                #add this child to the population
+                # add this child to the population
                 self.population.append((child, self.fitness(child)))
-    
-            #kill off some k number of entries in the population
-            #sorted by highest fitness value first
+
+            # kill off some k number of entries in the population
+            # sorted by highest fitness value first
             # print(f"New pop len: {len(self.population)}")
             # print(f"Population inside: ${self.population}")
 
@@ -275,44 +276,48 @@ class nQueens:
                 toRemove = sortedDict[i]
                 self.population.remove(toRemove)
                 print(f"Popped {toRemove}: current list: {self.population}")
-                k+= 1
-                if(k == m): break
+                k += 1
+                if (k == m):
+                    break
             op += 1
             print(f"Finished itr {op}")
 
-        return False 
+        return False
 
 
 class WallNQueens(nQueens):
 
     def fitness(self, x):
-        return 
-    
+        return
+
     def initPopulation(self, size):
-        return 
+        return
 
     def checkWalls(self, walls):
-        if len(walls) != self.n: return False
+        if len(walls) != self.n:
+            return False
 
         for i in walls:
-            if len(i) != self.n: return False
+            if len(i) != self.n:
+                return False
 
-        return True 
+        return True
 
     def solve(self):
-        return 
+        return
     pass
 
-print("TEST CASES")
-#print(f"FINAL ANS: {nQueens(1).solve(1)}")
-# print(f"FINAL ANS: {nQueens(3).solve(6)}")
-print(f"FINAL ANS: {nQueens(4).solve(5)}")
-print(f"FINAL ANS: {nQueens(4).solve(10)}")
-print(f"FINAL ANS: {nQueens(4).solve(20)}")
-print(f"FINAL ANS: {nQueens(10).solve(20)}")
-print(f"FINAL ANS: {nQueens(10).solve(100)}")
-print(f"FINAL ANS: {nQueens(100).solve(5)}")
-print(f"FINAL ANS: {nQueens(100).solve(5)}")
+# print("TEST CASES")
+# #print(f"FINAL ANS: {nQueens(1).solve(1)}")
+# # print(f"FINAL ANS: {nQueens(3).solve(6)}")
+# print(f"FINAL ANS: {nQueens(4).solve(5)}")
+# print(f"FINAL ANS: {nQueens(4).solve(10)}")
+# print(f"FINAL ANS: {nQueens(4).solve(20)}")
+# print(f"FINAL ANS: {nQueens(10).solve(20)}")
+# print(f"FINAL ANS: {nQueens(10).solve(100)}")
+# print(f"FINAL ANS: {nQueens(100).solve(5)}")
+# print(f"FINAL ANS: {nQueens(100).solve(5)}")
+
 
 """"
 Q000
