@@ -4,10 +4,9 @@ import "./App.css";
 function App() {
   const [size, setSize] = useState(0);
   const [board, setBoard] = useState([[]]);
-
-  const gridbox = {
-    width: 50 * size,
-  };
+  const [rightWall, setRightWall] = useState([]);
+  const [bottomWall, setBottomWall] = useState([]);
+  const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     setSize(5);
@@ -17,16 +16,39 @@ function App() {
     console.log(`chaning board size to ${size}`);
 
     let board = [];
-    for (var i = 1; i <= size; i++) {
+    for (var i = 0; i < size; i++) {
       let temp = [];
-      for (var j = 1; j <= size; j++) {
+      for (var j = 0; j < size; j++) {
         temp.push(0);
       }
       board.push(temp);
     }
     setBoard(board);
+
+    // Init the rightWall Array
+    board = [];
+    for (var i = 0; i < size; i++) {
+      let temp = [];
+      for (var j = 0; j < size - 1; j++) {
+        temp.push(0);
+      }
+      board.push(temp);
+    }
+    setRightWall(board);
+
+    // Init the bottomWall Array
+    board = [];
+    for (var i = 0; i < size - 1; i++) {
+      let temp = [];
+      for (var j = 0; j < size; j++) {
+        temp.push(0);
+      }
+      board.push(temp);
+    }
+    setBottomWall(board);
   }, [size]);
 
+  // Makes sure that the input is an integer
   const test = (e) => {
     const re = /^[0-9\b]+$/;
     if (e.target.value === "" || re.test(e.target.value)) {
@@ -34,14 +56,62 @@ function App() {
     }
   };
 
+  const setWall = (e, row, col) => {
+    console.log(`Setting all for ${row}:${col}`);
+    setClicked((current) => !current);
+    console.log(rightWall);
+    console.log(bottomWall);
+
+    if (e.target.className == "wall-right") {
+      console.log("right wall clicked");
+      rightWall[row][col] == 1
+        ? (rightWall[row][col] = 0)
+        : (rightWall[row][col] = 1);
+    } else if (e.target.className == "wall-bottom") {
+      bottomWall[row][col] == 1
+        ? (bottomWall[row][col] = 0)
+        : (bottomWall[row][col] = 1);
+    }
+  };
+
+  const getCombos = () => {};
+
   return (
     <div className="App">
-      <div>
+      <div className="gridbox">
         {board.map((items, idx) => {
           return (
             <div className="row">
               {items.map((subItem, subIdx) => {
-                return <div className="tile"></div>;
+                return (
+                  <div className="tile">
+                    {subIdx !== items.length - 1 ? (
+                      <div
+                        key={`${idx}:${subIdx}`}
+                        style={{
+                          backgroundColor:
+                            rightWall[idx][subIdx] == 1 ? "black" : "",
+                        }}
+                        className="wall-right"
+                        onClick={(e) => setWall(e, idx, subIdx)}
+                      />
+                    ) : (
+                      <div />
+                    )}
+                    {idx !== items.length - 1 ? (
+                      <div
+                        style={{
+                          backgroundColor:
+                            bottomWall[idx][subIdx] == 1 ? "black" : "",
+                        }}
+                        className="wall-bottom"
+                        onClick={(e) => setWall(e, idx, subIdx)}
+                      />
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+                );
               })}
             </div>
           );
