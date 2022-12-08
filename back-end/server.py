@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
-from queens import nQueens
+from queens import nQueens, WallNQueens
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -21,13 +21,18 @@ def get_combo():
     else:
         return 'Content-Type not supported!'
 
-    print(json["n"])
-    queen = nQueens(json["n"])
-    combo = queen.solve(4)
-    print(combo)
-    board = queen.boardFromString(combo)
-    print(board)
-    return board
+    # This one does not consider the walls
+    # queen = nQueens(json["n"])
+    # combo = queen.solve(4)
+    # print(combo)
+    # board = queen.boardFromString(combo)
+    # print(board)
+
+    # This one considers walls
+    wallQueen = WallNQueens(json["n"], json["rightWalls"], json["bottomWalls"])
+    boardStr = wallQueen.solve(4)
+    board = wallQueen.boardFromString(boardStr)
+    return "Some string"
 
 
 if __name__ == '__main__':

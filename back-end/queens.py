@@ -286,6 +286,11 @@ class nQueens:
 
 class WallNQueens(nQueens):
 
+    def __init__(self, n, rightWalls, bottomWalls):
+        super().__init__(n)
+        self.rightWalls = rightWalls
+        self.bottomWalls = bottomWalls
+
     def fitness(self, x):
         return
 
@@ -302,8 +307,63 @@ class WallNQueens(nQueens):
 
         return True
 
-    def solve(self):
-        return
+    def solve(self, m):
+        if self.n < 4:
+            print(f"Invalid input {self.n}")
+            return
+
+        # Check if the array is valid
+        # self.checkWalls(walls)
+
+        # init population
+        self.initPopulation(m)
+        op = 0
+
+        #m = self.population.items()
+        while True:
+            for (k, v) in self.population:
+                if (v == self.n*(self.n-1)):
+                    return k
+            # selecting the parents should have a higher probability to select higher fitness values
+            # we can map each population item to a % change that they will be chosen
+            # choose parents based on the above mentioned odds
+            # for i in range(0, m) self.population[i][0], self.population[i][1]
+
+            # print(f"Current len of pop: {len(self.population)}")
+
+            for i in range(0, m):
+                parent1Key = self.selectParent(self.population)[0]
+                parent2Key = self.selectParent(self.population)[0]
+                # [0.5*f1, 0.25*f2, 0.1225*f3, 0.6121*f4, ...] = 1
+                # print(f"Parent 1: {parent1Key}, Parent 2: {parent2Key}")
+
+                # Create the new child from combining the 2 parents
+                child = self.mutation(self.genetic(parent1Key, parent2Key))
+
+                # print(f"New Child: {child}")
+                # add this child to the population
+                self.population.append((child, self.fitness(child)))
+
+            # kill off some k number of entries in the population
+            # sorted by highest fitness value first
+            # print(f"New pop len: {len(self.population)}")
+            # print(f"Population inside: ${self.population}")
+
+            k = 0
+            sortedDict = sorted(self.population, key=lambda item: item[1])
+            # print(sortedDict)
+
+            for i in range(len(sortedDict)):
+                toRemove = sortedDict[i]
+                self.population.remove(toRemove)
+                print(f"Popped {toRemove}: current list: {self.population}")
+                k += 1
+                if (k == m):
+                    break
+            op += 1
+            print(f"Finished itr {op}")
+
+        return False
     pass
 
 # print("TEST CASES")

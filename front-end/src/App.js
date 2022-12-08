@@ -7,7 +7,6 @@ function App() {
   const [board, setBoard] = useState([[]]);
   const [rightWall, setRightWall] = useState([]);
   const [bottomWall, setBottomWall] = useState([]);
-  const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     setSize(5);
@@ -58,10 +57,7 @@ function App() {
   };
 
   const setWall = (e, row, col) => {
-    console.log(`Setting all for ${row}:${col}`);
-    setClicked((current) => !current);
-    console.log(rightWall);
-    console.log(bottomWall);
+    console.log(`Setting wall for ${row}:${col}`);
 
     if (e.target.className == "wall-right") {
       console.log("right wall clicked");
