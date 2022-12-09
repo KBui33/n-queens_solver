@@ -58,16 +58,18 @@ function App() {
 
   const setWall = (e, row, col) => {
     console.log(`Setting wall for ${row}:${col}`);
+    console.log(rightWall);
+    console.log(bottomWall);
 
     if (e.target.className == "wall-right") {
       console.log("right wall clicked");
-      rightWall[row][col] == 1
-        ? (rightWall[row][col] = 0)
-        : (rightWall[row][col] = 1);
+      let newArr = [...rightWall];
+      newArr[row][col] = newArr[row][col] == 1 ? 0 : 1;
+      setRightWall(newArr);
     } else if (e.target.className == "wall-bottom") {
-      bottomWall[row][col] == 1
-        ? (bottomWall[row][col] = 0)
-        : (bottomWall[row][col] = 1);
+      let newArr = [...bottomWall];
+      newArr[row][col] = newArr[row][col] == 1 ? 0 : 1;
+      setBottomWall(newArr);
     }
   };
 
@@ -83,40 +85,38 @@ function App() {
         setBoard(res.data);
       })
       .catch((err) => alert("an error occured"));
-
-    // await axios.get("http://localhost:5000z /").then((res) => console.log(res));
   };
 
   return (
     <div className="App">
       <div className="gridbox">
-        {board.map((items, idx) => {
+        {board.map((items, row) => {
           return (
             <div className="row">
-              {items.map((subItem, subIdx) => {
+              {items.map((subItem, col) => {
                 return (
                   <div className="tile">
-                    {subIdx !== items.length - 1 ? (
+                    {col !== items.length - 1 ? (
                       <div
-                        key={`${idx}:${subIdx}`}
+                        key={`${row}:${col}`}
                         style={{
                           backgroundColor:
-                            rightWall[idx][subIdx] == 1 ? "black" : "",
+                            rightWall[row][col] == 1 ? "black" : "",
                         }}
                         className="wall-right"
-                        onClick={(e) => setWall(e, idx, subIdx)}
+                        onClick={(e) => setWall(e, row, col)}
                       />
                     ) : (
                       <div />
                     )}
-                    {idx !== items.length - 1 ? (
+                    {row !== items.length - 1 ? (
                       <div
                         style={{
                           backgroundColor:
-                            bottomWall[idx][subIdx] == 1 ? "black" : "",
+                            bottomWall[row][col] == 1 ? "black" : "",
                         }}
                         className="wall-bottom"
-                        onClick={(e) => setWall(e, idx, subIdx)}
+                        onClick={(e) => setWall(e, row, col)}
                       />
                     ) : (
                       <div />

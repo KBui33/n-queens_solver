@@ -29,10 +29,10 @@ def get_combo():
     # print(board)
 
     # This one considers walls
-    wallQueen = WallNQueens(json["n"], json["rightWalls"], json["bottomWalls"])
-    boardStr = wallQueen.solve(4)
+    wallQueen = WallNQueens(json["n"], json["rightWall"], json["bottomWall"])
+    boardStr = wallQueen.solve(7)
     board = wallQueen.boardFromString(boardStr)
-    return "Some string"
+    return board
 
 
 if __name__ == '__main__':
